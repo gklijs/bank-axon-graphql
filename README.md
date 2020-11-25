@@ -1,10 +1,7 @@
-# Apache Kafka with GraphQL examples
+# Bank Axon Graphql
 
-This project is all about experimenting with Kafka and GraphQL. The frontend is deployed [here](https://graphql.gklijs.tech/results/linger-ms-config/average-latency) without a working backend but does contain some results from running tests..
-
-[![Presentation at GraphQL Summit 2019](http://img.youtube.com/vi/EN73NiR8xZI/0.jpg)](http://www.youtube.com/watch?v=EN73NiR8xZI "Using Kafka with GraphQL")
-
-[![Build Status](https://travis-ci.com/openweb-nl/kafka-graphql-examples.svg?branch=master)](https://travis-ci.com/openweb-nl/kafka-graphql-examples)
+This project is all about experimenting with Axon, rebuilding the CQRS bank application I build earlier, mostly using Kafka.
+Once the transition is complete I should have a good idea about the pro's and cons of using the [Axon Framework](https://axoniq.io/product-overview/axon-framework) for event sourcing. 
 
 ## Summary
 
