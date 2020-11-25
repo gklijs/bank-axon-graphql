@@ -3,6 +3,7 @@
 **/pom.xml
 !graphql-endpoint/pom.xml
 !command-handler/pom.xml
+!core-api/pom.xml
 command-handler/lib
 pom.xml.asc
 /lib/
