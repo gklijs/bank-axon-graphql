@@ -25,12 +25,12 @@ public class Subscription implements GraphQLSubscriptionResolver {
     }
 
     Publisher<MoneyTransferResult> money_transfer(long amount, String descr, String from, String to, String token,
-            String username, String uuid) {
+                                                  String username, String uuid) {
         return moneyTransferService.transfer(amount, descr, from, to, token, username, uuid);
     }
 
     Publisher<Transaction> stream_transactions(DType direction, String iban, Long minAmount, Long maxAmount,
-            String descrIncludes) {
+                                               String descrIncludes) {
         return transactionService.stream(direction, iban, minAmount, maxAmount, descrIncludes);
     }
 }

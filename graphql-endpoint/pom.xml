@@ -17,7 +17,7 @@
 	<properties>
 		<java.version>11</java.version>
 		<graphql-spring-boot-starter.version>5.10.0</graphql-spring-boot-starter.version>
-		<graphql-java-tools.version>5.6.1</graphql-java-tools.version>
+		<graphql-java-tools.version>5.7.1</graphql-java-tools.version>
 		<topology.version>0.1.0-SNAPSHOT</topology.version>
 		<functionaljava.version>4.8.1</functionaljava.version>
 	</properties>
@@ -50,6 +50,10 @@
 			<artifactId>reactor-core</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>nl.openweb</groupId>
 			<artifactId>topology</artifactId>
 			<version>${topology.version}</version>
@@ -59,6 +63,11 @@
 					<artifactId>kafka-clients</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>nl.openweb</groupId>
+			<artifactId>core-api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.functionaljava</groupId>
