@@ -2,29 +2,25 @@ package nl.openweb.commandhandler
 
 import nl.openweb.commandhandler.Utils.invalidFrom
 import nl.openweb.commandhandler.Utils.isValidOpenIban
-import nl.openweb.data.*
+import nl.openweb.data.BalanceChanged
+import nl.openweb.data.ConfirmMoneyTransfer
+import nl.openweb.data.MoneyTransferConfirmed
+import nl.openweb.data.MoneyTransferFailed
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.streams.KeyValue
-import org.apache.kafka.streams.kstream.KStream
-import org.apache.kafka.streams.kstream.Predicate
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.cloud.stream.annotation.EnableBinding
-import org.springframework.cloud.stream.annotation.StreamListener
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.messaging.handler.annotation.SendTo
-import java.lang.RuntimeException
+import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.util.*
 
-@EnableBinding(CommandHandlerTopics::class)
-@EnableAutoConfiguration
+@Component
 class MoneyTransferProcessor(
         private val balanceRepository: BalanceRepository,
         private val cmtRepository: CmtRepository,
 ) {
-
     fun getResponses(k: String, v: ConfirmMoneyTransfer): List<KeyValue<String, SpecificRecord>> {
-        return cmtRepository.findByIdOrNull(UUID.nameUUIDFromBytes(v.id.bytes()))?.let { cmtHandled(k, v, it) } ?: handleMoneyTransfer(k, v)
+        return cmtRepository.findByIdOrNull(UUID.nameUUIDFromBytes(v.id.bytes()))?.let { cmtHandled(k, v, it) }
+                ?: handleMoneyTransfer(k, v)
     }
 
     private fun cmtHandled(k: String, v: ConfirmMoneyTransfer, cmt: Cmt): List<KeyValue<String, SpecificRecord>> {

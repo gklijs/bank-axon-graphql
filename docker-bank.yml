@@ -17,6 +17,7 @@ services:
       SPRING_CLOUD_STREAM_KAFKA_STREAMS_BINDER_CONFIGURATION_SSL_KEYSTORE_PASSWORD: "kafka-graphql-examples"
       SPRING_CLOUD_STREAM_KAFKA_STREAMS_BINDER_CONFIGURATION_SSL_KEY_PASSWORD: "kafka-graphql-examples"
       SPRING_CLOUD_STREAM_KAFKA_STREAMS_BINDER_CONFIGURATION_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
+      AXON_AXONSERVER_SERVERS: "axon-server"
     volumes:
       - kafka-graphql-certs:/etc/kafka/secrets
     mem_limit: 2000m
@@ -41,6 +42,7 @@ services:
       SPRING_KAFKA_PROPERTIES_SSL_KEYSTORE_PASSWORD: "kafka-graphql-examples"
       SPRING_KAFKA_PROPERTIES_SSL_KEY_PASSWORD: "kafka-graphql-examples"
       SPRING_KAFKA_PROPERTIES_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
+      AXON_AXONSERVER_SERVERS: "axon-server"
     volumes:
       - kafka-graphql-certs:/etc/kafka/secrets
     mem_limit: 2000m

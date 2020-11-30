@@ -65,6 +65,11 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+			<groupId>org.axonframework</groupId>
+			<artifactId>axon-spring-boot-starter</artifactId>
+			<version>4.4.5</version>
+		</dependency>
+		<dependency>
 			<groupId>nl.openweb</groupId>
 			<artifactId>core-api</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
@@ -93,12 +98,11 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<optional>true</optional>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
-			<optional>true</optional>
 		</dependency>
 	</dependencies>
 

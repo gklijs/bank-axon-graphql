@@ -62,4 +62,4 @@ kafka:
 logging:
   level:
     ROOT: WARN
-    nl.openweb.graphql_endpoint: WARN
+    nl.openweb.graphql_endpoint: INFO

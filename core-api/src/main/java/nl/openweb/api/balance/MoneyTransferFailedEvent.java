@@ -1,11 +1,9 @@
-package nl.openweb.axon.balance;
+package nl.openweb.api.balance;
 
 import lombok.Value;
 
-import java.util.UUID;
-
 @Value
 public class MoneyTransferFailedEvent {
-    UUID id;
+    String id;
     String reason;
 }

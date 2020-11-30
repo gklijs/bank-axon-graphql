@@ -1,12 +1,11 @@
-package nl.openweb.axon.account;
+package nl.openweb.api.account;
 
 import lombok.Value;
 
-import java.util.UUID;
-
 @Value
 public class AccountCreationSucceedEvent {
-    UUID id;
+    String id;
+    String username;
     String iban;
     String token;
 }

@@ -1,7 +1,6 @@
 package nl.openweb.commandhandler
 
 import nl.openweb.data.BalanceChanged
-import nl.openweb.data.ConfirmMoneyTransfer
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.streams.kstream.KStream
 import org.springframework.cloud.stream.annotation.Input

@@ -1,4 +1,4 @@
-package nl.openweb.axon.balance;
+package nl.openweb.api.balance;
 
 import lombok.Value;
 

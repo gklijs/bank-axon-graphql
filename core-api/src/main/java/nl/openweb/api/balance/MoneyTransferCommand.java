@@ -1,14 +1,12 @@
-package nl.openweb.axon.balance;
+package nl.openweb.api.balance;
 
 import lombok.Value;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
-import java.util.UUID;
-
 @Value
 public class MoneyTransferCommand {
     @TargetAggregateIdentifier
-    UUID id;
+    String id;
     String token;
     long amount;
     String from;
