@@ -2,13 +2,22 @@ package nl.openweb.commandhandler
 
 import java.time.LocalDateTime
 import java.util.*
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.Table
+import javax.persistence.*
 
 @Entity
-@Table(name = "balance")
+@NamedQueries(
+        NamedQuery(name = "AccountSummary.total",
+                query = "SELECT COUNT (*) FROM AccountSummary"))
+class AccountSummary(
+        @Id
+        var id: String,
+        var username: String,
+        var iban: String,
+        var token: String,
+        var balance: Int,
+)
+
+@Entity
 class Balance(
         @Id @GeneratedValue
         var balanceId: Int,
@@ -22,7 +31,6 @@ class Balance(
 )
 
 @Entity
-@Table(name = "cac")
 class Cac(
         @Id
         var uuid: UUID,
@@ -33,7 +41,6 @@ class Cac(
 )
 
 @Entity
-@Table(name = "cmt")
 class Cmt(
         @Id
         var uuid: UUID,

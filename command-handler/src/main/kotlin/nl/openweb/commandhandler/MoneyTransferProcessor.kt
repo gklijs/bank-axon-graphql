@@ -1,5 +1,6 @@
 package nl.openweb.commandhandler
 
+import nl.openweb.api.account.AccountSummary
 import nl.openweb.commandhandler.Utils.invalidFrom
 import nl.openweb.commandhandler.Utils.isValidOpenIban
 import nl.openweb.data.BalanceChanged
@@ -14,13 +15,9 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Component
-class MoneyTransferProcessor(
-        private val balanceRepository: BalanceRepository,
-        private val cmtRepository: CmtRepository,
-) {
+class MoneyTransferProcessor() {
     fun getResponses(k: String, v: ConfirmMoneyTransfer): List<KeyValue<String, SpecificRecord>> {
-        return cmtRepository.findByIdOrNull(UUID.nameUUIDFromBytes(v.id.bytes()))?.let { cmtHandled(k, v, it) }
-                ?: handleMoneyTransfer(k, v)
+        return handleMoneyTransfer(k, v)
     }
 
     private fun cmtHandled(k: String, v: ConfirmMoneyTransfer, cmt: Cmt): List<KeyValue<String, SpecificRecord>> {
@@ -43,7 +40,7 @@ class MoneyTransferProcessor(
                 reason = transfer.reason
             }
         }
-        cmtRepository.save(Cmt(UUID.nameUUIDFromBytes(v.id.bytes()), reason, LocalDateTime.now()))
+        //cmtRepository.save(Cmt(UUID.nameUUIDFromBytes(v.id.bytes()), reason, LocalDateTime.now()))
         return if (reason.isBlank()) {
             transfer.responses
         } else {
@@ -53,26 +50,26 @@ class MoneyTransferProcessor(
 
     private fun tryTransfer(k: String, v: ConfirmMoneyTransfer): Result {
         val responses = mutableListOf<KeyValue<String, SpecificRecord>>()
-        val fromList = if (v.from.isValidOpenIban()) balanceRepository.findByIban(v.from) else Collections.emptyList()
+        val fromList : List<AccountSummary> = Collections.emptyList()
         val now = LocalDateTime.now()
-        if (fromList.isNotEmpty()) {
+/*        if (fromList.isNotEmpty()) {
             val from = fromList.first()
             when {
                 v.token != from.token -> return Result("invalid token", responses)
-                from.amount - v.amount < from.lmt -> return Result("insufficient funds", responses)
+                from.balance - v.amount < from.lmt -> return Result("insufficient funds", responses)
                 else -> {
                     val newFrom = Balance(from.balanceId, k, from.iban, from.token, from.amount - v.amount, from.lmt, from.createdAt, now)
                     balanceRepository.save(newFrom)
                     responses.add(KeyValue(from.iban, BalanceChanged(from.iban, newFrom.amount, -v.amount, v.to, v.description)))
                 }
             }
-        }
-        val toList = if (v.to.isValidOpenIban()) balanceRepository.findByIban(v.to) else Collections.emptyList()
+        }*/
+        val toList : List<AccountSummary> = Collections.emptyList()
         if (toList.isNotEmpty()) {
             val to = toList.first()
-            val newTo = Balance(to.balanceId, k, to.iban, to.token, to.amount + v.amount, to.lmt, to.createdAt, now)
-            balanceRepository.save(newTo)
-            responses.add(KeyValue(to.iban, BalanceChanged(to.iban, newTo.amount, v.amount, v.from, v.description)))
+            //val newTo = Balance(to.balanceId, k, to.iban, to.token, to.amount + v.amount, to.lmt, to.createdAt, now)
+            //balanceRepository.save(newTo)
+            responses.add(KeyValue(to.iban, BalanceChanged(to.iban, 50, v.amount, v.from, v.description)))
         }
         responses.add(KeyValue(k, MoneyTransferConfirmed(v.id)))
         return Result("", responses)
