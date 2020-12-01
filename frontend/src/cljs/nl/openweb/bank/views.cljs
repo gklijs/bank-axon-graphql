@@ -19,7 +19,6 @@
        (let [middle (re-frame/subscribe [::subs/middle])]
          (apply templates/middle-content @middle))]
       (let [selected-nav (re-frame/subscribe [::subs/selected-nav])]
-        (if-not (= :results @selected-nav)
           [:div.column.is-one-quarter
            (when (= :client @selected-nav)
              (let [login-status (re-frame/subscribe [::subs/login-status])]
@@ -27,4 +26,4 @@
            (let [max-items (re-frame/subscribe [::subs/max-items])]
              (templates/max-items-buttons @max-items))
            (let [show-arguments (re-frame/subscribe [::subs/show-arguments])]
-             (templates/show-argument-buttons @show-arguments))]))]]]])
+             (templates/show-argument-buttons @show-arguments))])]]]])

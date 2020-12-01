@@ -99,7 +99,6 @@ fabric.properties
 # frontend
 frontend/resources/public/js
 frontend/resources/public/css
-frontend/public/
 
 # Mac
 .DS_Store

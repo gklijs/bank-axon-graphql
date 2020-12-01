@@ -1,23 +1,19 @@
 (ns nl.openweb.bank.templates
   (:require [clojure.string :as string]
             [nl.openweb.bank.events :as events]
-            [nl.openweb.bank.results :as results]
             [nl.openweb.bank.routes :as routes]
             [re-frame.core :as re-frame]
             [re-graph.core :as re-graph]))
 
 (defn navbar-item
-  [nav selected-nav results]
+  [nav selected-nav]
   [:a.navbar-item
    {:class (when (= selected-nav nav) "is-active")
-    :href  (if
-             (= nav :results)
-             (routes/url-for nav :category (name (:category results)) :x-value (name (:x-value results)))
-             (routes/url-for nav))
+    :href (routes/url-for nav)
     :key   nav} (string/capitalize (name nav))])
 
 (defn nav-bar
-  [selected-nav expand show-left results]
+  [selected-nav expand show-left]
   [:nav#nav-bar.navbar.is-fixed-top {:role "navigation" :aria-label "main navigation"}
    [:div.navbar-brand
     [:a.navbar-item
@@ -39,7 +35,7 @@
      {:target "_blank", :href "https://www.linkedin.com/company/open-web-it-services/"}
      [:span.icon {:style {:color "#0077B5"}} [:i.mdi.mdi-24px.mdi-linkedin-box]]]
     [:a.navbar-item.is-hidden-desktop
-     {:target "_blank", :href "https://github.com/openweb-nl/kafka-graphql-examples"}
+     {:target "_blank", :href "https://github.com/gklijs/bank-axon-graphql"}
      [:span.icon {:style {:color "#24292e"}} [:i.mdi.mdi-24px.mdi-github-circle]]]
     [:button.button.navbar-burger
      {:on-click #(re-frame/dispatch [::events/toggle-mob-expand])
@@ -50,7 +46,7 @@
    [:div#main-menu.navbar-menu
     {:class (when expand "is-active")}
     [:div#flex-main-menu.navbar-start
-     (map #(navbar-item % selected-nav results) [:bank-employee :client :results])]
+     (map #(navbar-item % selected-nav) [:bank-employee :client])]
     [:div.navbar-end
      [:a.navbar-item.is-hidden-touch
       {:target "_blank", :href "https://www.openweb.nl"}
@@ -151,9 +147,7 @@
    [:p "This is a small demo project for showing some of the possibilities when exposing kafka topics as GraphQL endpoint."]
    [:p "All the components, beside the kafka cluster, and schema registry, are written in clojure."]
    [:p (str "At the right you see some of the transactions of account " company-iban " further on the right are filtering options.")]
-   [:p "From the navigation you can go to Bank-employee to see the other accounts, Client to open your own account, or Results to view some test results"]])
-
-
+   [:p "From the navigation you can go to Bank-employee to see the other accounts, Client to open your own account"]])
 
 (defn left-content
   [selected-nav data]
@@ -161,7 +155,6 @@
     :home (intro data)
     :bank-employee (apply employee-buttons data)
     :client (client-notification data)
-    :results (results/selection data)
     [:div data]))
 
 (defn transaction-box
@@ -297,7 +290,6 @@
     :home (home-overview data)
     :bank-employee (apply employee-overview data)
     :client (apply client-overview data)
-    :results [results/result-component data]
     [:p.notification.is-info (str "Something went wrong, " selected-nav " is no valid nav")]))
 
 (defn max-items-button

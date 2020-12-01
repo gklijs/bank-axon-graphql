@@ -19,6 +19,4 @@
                            :show_direction   true
                            :show_from_to     true
                            :show_changed_by  true
-                           :show_descr       true}
-   :results               {:category :linger-ms-config
-                           :x-value  :average-latency}})
+                           :show_descr       true}})

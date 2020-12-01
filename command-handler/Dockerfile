@@ -3,4 +3,4 @@ MAINTAINER Gerard Klijs <gerard@openweb.nl>
 
 ADD target/ch-docker.jar /app.jar
 
-CMD ["java", "-Xmx200m", "-jar", "/app.jar"]
+CMD ["java", "-Xmx1024m", "-jar", "/app.jar"]

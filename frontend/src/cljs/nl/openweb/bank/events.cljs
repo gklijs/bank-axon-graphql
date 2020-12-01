@@ -45,16 +45,6 @@
     (update db :show-left not)))
 
 (re-frame/reg-event-db
-  ::set-category
-  (fn [db [_ category]]
-    (assoc-in db [:results :category] category)))
-
-(re-frame/reg-event-db
-  ::set-x-value
-  (fn [db [_ x-value]]
-    (assoc-in db [:results :x-value] x-value)))
-
-(re-frame/reg-event-db
   ::set-subscription-id
   (fn [db [_ subscription-id]]
     (-> db
@@ -108,7 +98,7 @@
 (re-frame/reg-event-fx
   ::logout
   (fn [cofx [_ _]]
-    (let [new-db (assoc (:db cofx) :login-status {:valid false})]
+    (let [new-db (assoc (:db cofx) :login-status {:valid false} :transfer-data {:valid false} :transactions nil)]
       {:db         new-db
        :dispatch-n (get-dispatches new-db)})))
 

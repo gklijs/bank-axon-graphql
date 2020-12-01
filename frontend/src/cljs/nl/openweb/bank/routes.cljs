@@ -6,8 +6,7 @@
 
 (def routes ["/" {""                                  :home
                   "employee"                          :bank-employee
-                  "client"                            :client
-                  ["results/" :category "/" :x-value] :results}])
+                  "client"                            :client}])
 
 (defn- parse-url [url]
   (bidi/match-route routes url))
