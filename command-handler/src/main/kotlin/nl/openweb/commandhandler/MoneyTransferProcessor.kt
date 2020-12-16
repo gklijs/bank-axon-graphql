@@ -1,15 +1,12 @@
 package nl.openweb.commandhandler
 
-import nl.openweb.api.account.AccountSummary
 import nl.openweb.commandhandler.Utils.invalidFrom
-import nl.openweb.commandhandler.Utils.isValidOpenIban
 import nl.openweb.data.BalanceChanged
 import nl.openweb.data.ConfirmMoneyTransfer
 import nl.openweb.data.MoneyTransferConfirmed
 import nl.openweb.data.MoneyTransferFailed
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.streams.KeyValue
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.util.*

@@ -1,7 +1,7 @@
 package nl.openweb.commandhandler
 
-import nl.openweb.api.account.AccountCreationSucceedEvent
-import nl.openweb.api.account.CreateAccountCommand
+import nl.openweb.api.bank.event.BankAccountCreatedEvent
+import nl.openweb.api.bank.command.CreateBankAccountCommand
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.modelling.command.AggregateCreationPolicy
@@ -22,12 +22,19 @@ class Account {
 
     @CommandHandler
     @CreationPolicy(AggregateCreationPolicy.CREATE_IF_MISSING)
-    protected fun handle(cmd: CreateAccountCommand) {
-        apply(AccountCreationSucceedEvent(cmd.id, cmd.username, Utils.getIban(), Utils.getToken()))
+    protected fun handle(cmd: CreateBankAccountCommand) {
+        apply(
+            BankAccountCreatedEvent(
+                cmd.id,
+                cmd.username,
+                Utils.getIban(),
+                Utils.getToken()
+            )
+        )
     }
 
     @EventSourcingHandler
-    protected fun on(event: AccountCreationSucceedEvent) {
+    protected fun on(event: BankAccountCreatedEvent) {
         this.id = event.id
         this.username = event.username
         this.iban = event.iban

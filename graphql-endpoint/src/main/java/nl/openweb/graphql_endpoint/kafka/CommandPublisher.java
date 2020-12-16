@@ -2,7 +2,7 @@ package nl.openweb.graphql_endpoint.kafka;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nl.openweb.api.account.CreateAccountCommand;
+import nl.openweb.api.bank.command.CreateBankAccountCommand;
 import nl.openweb.data.ConfirmAccountCreation;
 import nl.openweb.graphql_endpoint.mapper.UuidMapper;
 import nl.openweb.graphql_endpoint.properties.KafkaProperties;
@@ -25,7 +25,7 @@ public class CommandPublisher {
         if(avroRecord instanceof ConfirmAccountCreation){
             log.info("Going to send command");
             ConfirmAccountCreation command = (ConfirmAccountCreation) avroRecord;
-            CreateAccountCommand axonCommand = new CreateAccountCommand(UuidMapper.fromAvroUuid(command.getId()).toString(), command.getUsername());
+            CreateBankAccountCommand axonCommand = new CreateBankAccountCommand(UuidMapper.fromAvroUuid(command.getId()).toString(), command.getUsername());
             commandGateway.send(axonCommand, (o,n) -> {
                 log.info("First thing {}", o);
                 log.info("Second thing {}", n);

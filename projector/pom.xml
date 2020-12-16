@@ -4,12 +4,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>nl.openweb</groupId>
-  <artifactId>command-handler</artifactId>
+  <artifactId>projector</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>Kotlin Command Handler</name>
-  <description>Kotlin version of the command handler from the kafka workshop project</description>
+  <name>Projector</name>
+  <description>The projector from the kafka workshop project</description>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -29,19 +29,11 @@
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-stream</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-stream-binder-kafka-streams</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.kafka</groupId>
-      <artifactId>spring-kafka</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
@@ -50,22 +42,6 @@
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-reflect</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>nl.openweb</groupId>
-      <artifactId>topology</artifactId>
-      <version>${topology.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.kafka</groupId>
-          <artifactId>kafka-clients</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>io.confluent</groupId>
-      <artifactId>kafka-streams-avro-serde</artifactId>
-      <version>6.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.axonframework</groupId>
@@ -92,22 +68,16 @@
       <artifactId>spring-boot-devtools</artifactId>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.16</version>
+      <optional>true</optional>
+    </dependency>
   </dependencies>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dependencies</artifactId>
-        <version>${spring-cloud.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <build>
-    <finalName>ch-docker</finalName>
+    <finalName>projector-docker</finalName>
     <sourceDirectory>src/main/kotlin</sourceDirectory>
     <plugins>
       <plugin>
@@ -123,6 +93,7 @@
           </args>
           <compilerPlugins>
             <plugin>spring</plugin>
+            <plugin>jpa</plugin>
           </compilerPlugins>
           <jvmTarget>1.8</jvmTarget>
         </configuration>

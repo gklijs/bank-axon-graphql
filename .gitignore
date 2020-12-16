@@ -5,6 +5,7 @@
 !command-handler/pom.xml
 command-handler/database.*
 !core-api/pom.xml
+!projector/pom.xml
 command-handler/lib
 pom.xml.asc
 /lib/

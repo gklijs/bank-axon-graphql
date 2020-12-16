@@ -1,4 +1,4 @@
-package nl.openweb.api.balance;
+package nl.openweb.api.bank.command;
 
 import lombok.Value;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
@@ -6,7 +6,7 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @Value
 public class MoneyTransferCommand {
     @TargetAggregateIdentifier
-    String id;
+    String transactionId;
     String token;
     long amount;
     String from;

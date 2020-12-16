@@ -1,6 +1,6 @@
 package nl.openweb.commandhandler.query
 
-import nl.openweb.api.account.AccountCreationSucceedEvent
+import nl.openweb.api.bank.event.BankAccountCreatedEvent
 import nl.openweb.commandhandler.AccountSummary
 import nl.openweb.logging.LoggerDelegate
 import org.axonframework.eventhandling.EventHandler
@@ -18,7 +18,7 @@ class AccountSummaryProjection(
     private val logger by LoggerDelegate()
 
     @EventHandler
-    fun on(accountCreationSucceedEvent: AccountCreationSucceedEvent) {
+    fun on(accountCreationSucceedEvent: BankAccountCreatedEvent) {
         val summary = AccountSummary(
                 accountCreationSucceedEvent.id,
                 accountCreationSucceedEvent.username,
