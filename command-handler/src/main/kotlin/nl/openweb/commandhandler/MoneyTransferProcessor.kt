@@ -17,15 +17,6 @@ class MoneyTransferProcessor() {
         return handleMoneyTransfer(k, v)
     }
 
-    private fun cmtHandled(k: String, v: ConfirmMoneyTransfer, cmt: Cmt): List<KeyValue<String, SpecificRecord>> {
-        val result: SpecificRecord = if (cmt.reason.isBlank()) {
-            MoneyTransferConfirmed(v.id)
-        } else {
-            MoneyTransferFailed(v.id, cmt.reason)
-        }
-        return listOf(KeyValue(k, result))
-    }
-
     private fun handleMoneyTransfer(k: String, v: ConfirmMoneyTransfer): List<KeyValue<String, SpecificRecord>> {
         val reason: String
         lateinit var transfer: Result
@@ -73,4 +64,11 @@ class MoneyTransferProcessor() {
     }
 
     data class Result(val reason: String, val responses: List<KeyValue<String, SpecificRecord>>)
+
+    data class AccountSummary(
+        val id: String,
+        var iban: String,
+        var token: String,
+        var balance: Long,
+    )
 }

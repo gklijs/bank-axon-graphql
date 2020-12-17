@@ -3,6 +3,7 @@ package nl.openweb.projector
 import lombok.RequiredArgsConstructor
 import nl.openweb.api.bank.event.BankAccountCreatedEvent
 import nl.openweb.api.bank.query.BankAccount
+import nl.openweb.api.bank.query.FindBankAccountQuery
 import nl.openweb.api.user.event.BankAccountAddedEvent
 import nl.openweb.api.user.event.BankAccountRemovedEvent
 import nl.openweb.api.user.event.UserAccountCreatedEvent
@@ -26,5 +27,18 @@ class BankAccountProjector(
             mutableListOf()
         )
         bankAccountRepository.save(newAccount)
+    }
+
+    @QueryHandler
+    fun handle(query: FindBankAccountQuery): BankAccount? {
+        return bankAccountRepository.findById(query.iban)
+            .map { b ->
+                BankAccount(
+                    b.iban,
+                    b.token,
+                    b.balance,
+                )
+            }
+            .orElse(null)
     }
 }

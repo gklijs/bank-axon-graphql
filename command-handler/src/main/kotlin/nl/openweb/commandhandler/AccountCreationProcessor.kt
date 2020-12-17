@@ -5,7 +5,6 @@ import nl.openweb.data.AccountCreationConfirmed
 import nl.openweb.data.AccountCreationFailed
 import nl.openweb.data.ConfirmAccountCreation
 import org.apache.avro.specific.SpecificRecord
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.util.*

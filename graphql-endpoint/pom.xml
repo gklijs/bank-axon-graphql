@@ -70,6 +70,11 @@
 			<version>4.4.5</version>
 		</dependency>
 		<dependency>
+			<groupId>org.axonframework.extensions.reactor</groupId>
+			<artifactId>axon-reactor-spring-boot-starter</artifactId>
+			<version>4.4.2</version>
+		</dependency>
+		<dependency>
 			<groupId>nl.openweb</groupId>
 			<artifactId>core-api</artifactId>
 			<version>0.0.1-SNAPSHOT</version>

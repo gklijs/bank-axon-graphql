@@ -1,8 +1,8 @@
 package nl.openweb.graphql_endpoint.model;
 
-import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 public class AccountResult {
     private String iban;
     private String reason;

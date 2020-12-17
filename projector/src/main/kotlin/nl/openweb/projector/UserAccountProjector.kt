@@ -10,6 +10,7 @@ import nl.openweb.api.user.query.UserAccount
 import org.axonframework.eventhandling.EventHandler
 import org.axonframework.queryhandling.QueryHandler
 import org.springframework.stereotype.Component
+import java.util.*
 
 @Component
 @RequiredArgsConstructor
@@ -44,7 +45,7 @@ class UserAccountProjector(
     }
 
     @QueryHandler
-    fun handle(query: FindUserAccountQuery): UserAccount {
+    fun handle(query: FindUserAccountQuery): UserAccount? {
         return userAccountRepository.findById(query.username)
             .map { u -> UserAccount(
                 u.username,
@@ -55,6 +56,6 @@ class UserAccountProjector(
                     b.balance
                 )}
             ) }
-            .orElseThrow()
+            .orElse(null)
     }
 }
