@@ -20,8 +20,8 @@ public class Subscription implements GraphQLSubscriptionResolver {
     private final MoneyTransferService moneyTransferService;
     private final TransactionService transactionService;
 
-    Publisher<AccountResult> get_account(String username, String password) {
-        return accountCreationService.getAccount(username, password);
+    Publisher<AccountResult> get_account(String password, String username) {
+        return accountCreationService.getAccount(password, username);
     }
 
     Publisher<MoneyTransferResult> money_transfer(long amount, String descr, String from, String to, String token,

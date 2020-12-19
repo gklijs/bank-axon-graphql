@@ -1,10 +1,10 @@
-package nl.openweb.api.user.event;
+package nl.openweb.api.bank.event;
 
 import lombok.Value;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 @Value
-public class BankAccountAddedEvent {
+public class UserRemovedEvent {
     @TargetAggregateIdentifier
     String username;
     String iban;

@@ -46,7 +46,7 @@ spring.cloud.stream:
     bach:
       destination: balance_changed
 
-# postgres database
+# h2 in memory database
 spring.datasource:
   url: jdbc:h2:./database;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
   driver-class-name: org.h2.Driver
@@ -60,5 +60,9 @@ spring.jpa:
     hibernate:
       temp:
         use_jdbc_metadata_defaults: false
+# axon framework
+axon:
+  axonserver:
+    client-id: command-handler
 #logging.level.org.apache.kafka: debug
 logging.level.root: info

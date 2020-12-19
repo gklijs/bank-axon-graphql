@@ -7,8 +7,6 @@ class UserAccountSummary(
     @Id
     var username: String,
     var password: String,
-    @ManyToMany
-    var bankAccounts: MutableList<BankAccountSummary>,
 )
 
 @Entity
@@ -17,8 +15,10 @@ class BankAccountSummary(
     var iban: String,
     var token: String,
     var balance: Long,
+    @ElementCollection
+    var users: MutableList<String>,
     @OneToMany
-    var transaction: MutableList<TransactionSummary>,
+    var transactions: MutableList<TransactionSummary>,
 )
 
 @Entity
@@ -36,10 +36,10 @@ class TransactionSummary(
 @Entity
 class TransferSummary(
     @Id
-    var transactionId: String,
+    var transferId: String,
     var amount: Long,
-    var from: String,
-    var to: String,
+    var tranferFrom: String,
+    var transferTo: String,
     var description: String,
     var error: String? = null,
     var state: TransferState = TransferState.BEING_PROCESSED,

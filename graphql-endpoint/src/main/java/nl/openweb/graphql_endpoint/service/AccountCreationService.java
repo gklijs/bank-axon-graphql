@@ -3,16 +3,17 @@ package nl.openweb.graphql_endpoint.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.openweb.api.bank.command.CreateBankAccountCommand;
-import nl.openweb.api.bank.query.BankAccount;
-import nl.openweb.api.bank.query.FindBankAccountQuery;
+import nl.openweb.api.bank.query.BankAccountList;
+import nl.openweb.api.bank.query.FindBankAccountsForUserQuery;
 import nl.openweb.api.bank.utils.IbanUtil;
-import nl.openweb.api.user.command.AddBankAccountCommand;
 import nl.openweb.api.user.command.CreateUserAccountCommand;
+import nl.openweb.api.user.error.UserExceptionStatusCode;
 import nl.openweb.api.user.query.FindUserAccountQuery;
 import nl.openweb.api.user.query.UserAccount;
 import nl.openweb.graphql_endpoint.model.AccountResult;
 import org.axonframework.extensions.reactor.commandhandling.gateway.ReactorCommandGateway;
 import org.axonframework.extensions.reactor.queryhandling.gateway.ReactorQueryGateway;
+import org.axonframework.queryhandling.QueryExecutionException;
 import org.reactivestreams.Publisher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,32 +33,51 @@ public class AccountCreationService {
         return queryGateway.query(new FindUserAccountQuery(username), UserAccount.class);
     }
 
-    private Mono<BankAccount> getBankAccount(String iban) {
-        return queryGateway.query(new FindBankAccountQuery(iban), BankAccount.class);
+    private Mono<BankAccountList> getBankAccounts(String username) {
+        return queryGateway.query(new FindBankAccountsForUserQuery(username), BankAccountList.class);
     }
 
-    private Mono<UserAccount> createAccount(String username, String password) {
+    private Mono<UserAccount> createAccount(String password, String username) {
         String iban = IbanUtil.getIban();
-        return commandGateway.send(new CreateUserAccountCommand(username, passwordEncoder.encode(password)))
-                .flatMap(x -> commandGateway.send(new CreateBankAccountCommand(iban)))
-                .flatMap(x -> getBankAccount(iban))
-                .flatMap(x -> commandGateway.send(new AddBankAccountCommand(username, iban, x.getToken())))
-                .flatMap(x -> getExistingAccount(username));
+        String encoded = passwordEncoder.encode(password);
+        return commandGateway.send(new CreateUserAccountCommand(username, encoded))
+                .flatMap(x -> commandGateway.send(new CreateBankAccountCommand(iban, username)))
+                .map(x -> new UserAccount(username, encoded));
     }
 
-    private Mono<UserAccount> checkPassword(UserAccount userAccount, String password) {
+    private UserAccount checkPassword(UserAccount userAccount, String password) {
         if (passwordEncoder.matches(password, userAccount.getPassword())) {
-            return Mono.just(userAccount);
+            return userAccount;
         } else {
             throw new IllegalArgumentException("wrong password");
         }
     }
 
-    public Publisher<AccountResult> getAccount(String username, String password) {
+    private boolean wasNotFound(Throwable e) {
+        if (e instanceof QueryExecutionException) {
+            return ((QueryExecutionException) e).getDetails().
+                    map(x -> x == UserExceptionStatusCode.USER_ACCOUNT_NOT_FOUND)
+                    .orElse(false);
+        }
+        return false;
+    }
+
+    private Mono<AccountResult> mapError(Throwable e) {
+        log.info("captured error", e);
+        String description = e.getMessage().equals("wrong password") ?
+                UserExceptionStatusCode.INVALID_PASSWORD.getDescription() :
+                UserExceptionStatusCode.UNKNOWN_EXCEPTION.getDescription();
+        AccountResult result = new AccountResult(null, null, description);
+        return Mono.just(result);
+    }
+
+    public Publisher<AccountResult> getAccount(String password, String username) {
         return getExistingAccount(username)
-                .flatMap(user -> user == null ? createAccount(username, password) : checkPassword(user, password))
-                .map(account -> account.getBankAccounts().get(0))
-                .map(account -> new AccountResult(account.getIban(), account.getIban(), null))
-                .onErrorResume(e -> Mono.just(new AccountResult(null, null, e.getMessage())));
+                .onErrorResume(this::wasNotFound, e -> createAccount(password, username))
+                .map(account -> checkPassword(account, password))
+                .flatMap(account -> getBankAccounts(account.getUsername()))
+                .map(accounts -> accounts.get(0))
+                .map(account -> new AccountResult(account.getIban(), account.getToken(), null))
+                .onErrorResume(this::mapError);
     }
 }

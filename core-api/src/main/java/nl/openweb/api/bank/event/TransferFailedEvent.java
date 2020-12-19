@@ -6,6 +6,6 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @Value
 public class TransferFailedEvent {
     @TargetAggregateIdentifier
-    String transactionId;
+    String transferId;
     String reason;
 }

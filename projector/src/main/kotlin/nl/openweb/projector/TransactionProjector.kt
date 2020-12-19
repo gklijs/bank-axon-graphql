@@ -1,11 +1,14 @@
 package nl.openweb.projector
 
 import lombok.RequiredArgsConstructor
-import nl.openweb.api.bank.event.*
+import nl.openweb.api.bank.event.MoneyCreditedEvent
+import nl.openweb.api.bank.event.MoneyDebitedEvent
+import org.axonframework.config.ProcessingGroup
 import org.axonframework.eventhandling.EventHandler
 import org.springframework.stereotype.Component
 
 @Component
+@ProcessingGroup("transactions")
 @RequiredArgsConstructor
 class TransactionProjector(
     val transactionRepository: TransactionRepository,
@@ -19,15 +22,15 @@ class TransactionProjector(
         val newBalance = account.balance - transfer.amount
         var transaction = TransactionSummary(
             0,
-            transfer.from,
-            transfer.to,
+            transfer.tranferFrom,
+            transfer.transferTo,
             0 - transfer.amount,
             newBalance,
             transfer.description,
         )
         transaction = transactionRepository.save(transaction)
         account.balance = newBalance
-        account.transaction.add(transaction)
+        account.transactions.add(transaction)
         bankAccountRepository.save(account)
     }
 
@@ -38,15 +41,15 @@ class TransactionProjector(
         val newBalance = account.balance + transfer.amount
         var transaction = TransactionSummary(
             0,
-            transfer.to,
-            transfer.from,
+            transfer.transferTo,
+            transfer.tranferFrom,
             transfer.amount,
             newBalance,
             transfer.description,
         )
         transaction = transactionRepository.save(transaction)
         account.balance = newBalance
-        account.transaction.add(transaction)
+        account.transactions.add(transaction)
         bankAccountRepository.save(account)
     }
 }

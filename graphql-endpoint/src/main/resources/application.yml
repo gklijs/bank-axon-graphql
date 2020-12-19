@@ -59,6 +59,11 @@ kafka:
   mtf-topic: money_transfer_feedback
   bc-topic: balance_changed
 
+# axon framework
+axon:
+  axonserver:
+    client-id: graphql-endpoint
+
 logging:
   level:
     ROOT: WARN

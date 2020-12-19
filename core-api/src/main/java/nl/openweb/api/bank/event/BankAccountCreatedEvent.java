@@ -8,4 +8,5 @@ public class BankAccountCreatedEvent {
     @TargetAggregateIdentifier
     String iban;
     String token;
+    String username;
 }

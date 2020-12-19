@@ -4,7 +4,7 @@ import lombok.Value;
 
 @Value
 public class AccountResult {
-    private String iban;
-    private String reason;
-    private String token;
+    String iban;
+    String token;
+    String reason;
 }

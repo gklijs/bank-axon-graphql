@@ -1,12 +1,12 @@
-package nl.openweb.api.user.command;
+package nl.openweb.api.bank.command;
 
 import lombok.Value;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 @Value
-public class AddBankAccountCommand {
+public class AddUserCommand {
     @TargetAggregateIdentifier
-    String username;
     String iban;
+    String username;
     String token;
 }

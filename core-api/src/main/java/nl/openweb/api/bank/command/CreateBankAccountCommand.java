@@ -7,4 +7,5 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 public class CreateBankAccountCommand {
     @TargetAggregateIdentifier
     String iban;
+    String username;
 }

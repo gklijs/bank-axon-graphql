@@ -6,5 +6,5 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @Value
 public class TransferCompletedEvent {
     @TargetAggregateIdentifier
-    String transactionId;
+    String transferId;
 }
