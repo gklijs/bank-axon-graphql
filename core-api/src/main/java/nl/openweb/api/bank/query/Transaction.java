@@ -4,11 +4,10 @@ import lombok.Value;
 
 @Value
 public class Transaction {
-    Integer id;
-    String transactionId;
-    String token;
-    long amount;
-    String from;
-    String to;
+    long id;
+    String iban;
+    String fromTo;
+    long changedBy;
+    long newBalance;
     String description;
 }

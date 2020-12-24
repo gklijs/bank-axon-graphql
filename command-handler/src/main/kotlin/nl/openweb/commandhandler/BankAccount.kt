@@ -1,14 +1,10 @@
 package nl.openweb.commandhandler
 
-import nl.openweb.api.bank.command.AddUserCommand
-import nl.openweb.api.bank.event.BankAccountCreatedEvent
-import nl.openweb.api.bank.command.CreateBankAccountCommand
-import nl.openweb.api.bank.command.RemoveUserCommand
+import nl.openweb.api.bank.command.*
 import nl.openweb.api.bank.error.BankCommandException
 import nl.openweb.api.bank.error.BankExceptionStatusCode
-import nl.openweb.api.bank.event.MoneyCreditedEvent
-import nl.openweb.api.bank.event.MoneyDebitedEvent
-import nl.openweb.api.bank.event.UserAddedEvent
+import nl.openweb.api.bank.event.*
+import nl.openweb.api.bank.utils.TokenUtil
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.messaging.interceptors.ExceptionHandler
@@ -25,7 +21,7 @@ class BankAccount {
     private var iban: String? = null
     private var token: String? = null
     private var balance = 0L
-    private var limit = - 500
+    private var limit = -500L
     private val users = mutableListOf<String>()
 
     @CommandHandler
@@ -34,7 +30,7 @@ class BankAccount {
         AggregateLifecycle.apply(
             BankAccountCreatedEvent(
                 cmd.iban,
-                Utils.getToken(),
+                TokenUtil.getToken(),
                 cmd.username
             )
         )
@@ -42,8 +38,11 @@ class BankAccount {
 
     @CommandHandler
     protected fun handle(cmd: AddUserCommand) {
-        if (! cmd.token.equals(this.token)){
+        if (!cmd.token.equals(this.token)) {
             throw IllegalStateException("The supplied token is not valid, ${cmd.token} not equal to stored ${this.token}")
+        }
+        if (!this.users.contains(cmd.username)) {
+            throw IllegalStateException("The user ${cmd.username} is already an owner of the bank account")
         }
         AggregateLifecycle.apply(
             UserAddedEvent(
@@ -55,11 +54,11 @@ class BankAccount {
 
     @CommandHandler
     protected fun handle(cmd: RemoveUserCommand) {
-        if (! cmd.token.equals(this.token)){
+        if (!cmd.token.equals(this.token)) {
             throw IllegalStateException("The supplied token is not valid, ${cmd.token} not equal to stored ${this.token}")
         }
-        if (! this.users.contains(cmd.username)) {
-            throw IllegalStateException("The user ${cmd.username} is not an owner of the bank account")
+        if (!this.users.contains(cmd.username)) {
+            throw IllegalStateException("The user ${cmd.username} is not an owner of this bank account")
         }
         if (this.users.size == 1 && this.balance != 0L) {
             throw IllegalStateException("User can't be removed because only owner and balance is not zero")
@@ -68,6 +67,49 @@ class BankAccount {
             UserAddedEvent(
                 cmd.username,
                 cmd.iban
+            )
+        )
+    }
+
+    @CommandHandler
+    protected fun handle(cmd: DebitMoneyCommand) {
+        if (!cmd.token.equals(this.token)) {
+            throw IllegalStateException("The supplied token is not valid, ${cmd.token} not equal to stored ${this.token}")
+        }
+        if (this.balance - cmd.amount < this.limit) {
+            throw IllegalStateException("Insufficient funds, debiting the money would put the balance at ${this.balance - cmd.amount}")
+        }
+        if (!this.users.contains(cmd.username)) {
+            throw IllegalStateException("The user ${cmd.username} is not an owner of this bank account")
+        }
+        AggregateLifecycle.apply(
+            MoneyDebitedEvent(
+                cmd.iban,
+                cmd.amount,
+                cmd.transferId,
+            )
+        )
+    }
+
+    @CommandHandler
+    protected fun handle(cmd: CreditMoneyCommand) {
+        AggregateLifecycle.apply(
+            MoneyCreditedEvent(
+                cmd.iban,
+                cmd.amount,
+                cmd.transferId,
+            )
+        )
+    }
+
+    @CommandHandler
+    protected fun handle(cmd: ReturnMoneyCommand) {
+        AggregateLifecycle.apply(
+            MoneyReturnedEvent(
+                cmd.iban,
+                cmd.amount,
+                cmd.transferId,
+                cmd.reason,
             )
         )
     }
@@ -99,15 +141,23 @@ class BankAccount {
         this.balance = balance + event.amount
     }
 
+    @EventSourcingHandler
+    protected fun on(event: ReturnMoneyCommand) {
+        this.balance = balance + event.amount
+    }
+
     @ExceptionHandler(resultType = IllegalStateException::class)
     fun handle(exception: IllegalStateException) {
-        val statusCode = if (exception.message!!.contains("Insufficient")) {
+        val message = exception.message.orEmpty()
+        val statusCode = if (message.contains("Insufficient funds")) {
             BankExceptionStatusCode.INSUFFICIENT_FUNDS
-        } else if (exception.message!!.contains("The supplied token is not valid")) {
+        } else if (message.contains("The supplied token is not valid")) {
             BankExceptionStatusCode.INVALID_TOKEN
-        } else if (exception.message!!.contains("is not an owner of the bank account")) {
+        } else if (message.contains("is not an owner of this bank account")) {
             BankExceptionStatusCode.USER_IS_NO_OWNER
-        } else if (exception.message!!.contains("balance is not zero")) {
+        } else if (message.contains("is already an owner of the bank account")) {
+            BankExceptionStatusCode.USER_IS_ALREADY_OWNER
+        } else if (message.contains("balance is not zero")) {
             BankExceptionStatusCode.BALANCE_NOT_ZERO_SINGLE_OWNER
         } else {
             BankExceptionStatusCode.UNKNOWN_EXCEPTION

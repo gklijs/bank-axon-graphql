@@ -10,13 +10,13 @@ public class IbanUtil {
 
     public String getIban() {
         StringBuilder builder = new StringBuilder();
-        IntStream.range(1,10).forEach(x -> builder.append(RandomUtil.getRandom().nextInt(10)));
+        IntStream.range(0, 10).forEach(x -> builder.append(RandomUtil.getRandom().nextInt(10)));
         return toIban(builder.toString());
     }
 
     private String toIban(String digits) {
         int checkNr = new BigInteger("24251423" + digits + "232100").remainder(BigInteger.valueOf(97)).intValue();
-        String checkPart = Integer.toString(checkNr);
+        String checkPart = Integer.toString(98 - checkNr);
         if (checkPart.length() == 1) {
             checkPart = '0' + checkPart;
         }

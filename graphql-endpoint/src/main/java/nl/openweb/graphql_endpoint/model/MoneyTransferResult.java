@@ -1,12 +1,10 @@
 package nl.openweb.graphql_endpoint.model;
 
-import lombok.Data;
+import lombok.Value;
 
-import java.util.UUID;
-
-@Data
+@Value
 public class MoneyTransferResult {
-    private String reason;
-    private boolean success;
-    private UUID uuid;
+    String reason;
+    boolean success;
+    String uuid;
 }

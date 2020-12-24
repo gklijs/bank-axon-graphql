@@ -1,5 +1,6 @@
 package nl.openweb.projector
 
+import nl.openweb.api.bank.query.Transaction
 import javax.persistence.*
 
 @Entity
@@ -30,7 +31,8 @@ class TransactionSummary(
     var fromTo: String,
     var changedBy: Long,
     var newBalance: Long,
-    var descr: String,
+    var description: String,
+    var transferId: String,
 )
 
 @Entity
@@ -42,9 +44,20 @@ class TransferSummary(
     var transferTo: String,
     var description: String,
     var error: String? = null,
-    var state: TransferState = TransferState.BEING_PROCESSED,
+    var state: TransferSummaryState = TransferSummaryState.BEING_PROCESSED,
 )
 
-enum class TransferState {
+enum class TransferSummaryState {
     BEING_PROCESSED, FAILED, COMPLETED
+}
+
+fun TransactionSummary.asApi(): Transaction {
+    return Transaction(
+        this.id,
+        this.iban,
+        this.fromTo,
+        this.changedBy,
+        this.newBalance,
+        this.description
+    )
 }

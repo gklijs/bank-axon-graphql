@@ -7,16 +7,6 @@ services:
       context: command-handler
     container_name: command-handler
     environment:
-      SPRING_DATASOURCE_URL: "jdbc:postgresql://db-ch:25432/balancedb"
-      SPRING_CLOUD_STREAM_KAFKA_STREAMS_BINDER_BROKERS: "kafka-1:19093,kafka-2:19095,kafka-3:19097"
-      SPRING_CLOUD_STREAM_KAFKA_STREAMS_BINDER_CONFIGURATION_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
-      SPRING_CLOUD_STREAM_KAFKA_STREAMS_BINDER_CONFIGURATION_SECURITY_PROTOCOL: "SSL"
-      SPRING_CLOUD_STREAM_KAFKA_STREAMS_BINDER_CONFIGURATION_SSL_TRUSTSTORE_LOCATION: "/etc/kafka/secrets/kafka.command-handler.truststore.jks"
-      SPRING_CLOUD_STREAM_KAFKA_STREAMS_BINDER_CONFIGURATION_SSL_TRUSTSTORE_PASSWORD: "kafka-graphql-examples"
-      SPRING_CLOUD_STREAM_KAFKA_STREAMS_BINDER_CONFIGURATION_SSL_KEYSTORE_LOCATION: "/etc/kafka/secrets/kafka.command-handler.keystore.jks"
-      SPRING_CLOUD_STREAM_KAFKA_STREAMS_BINDER_CONFIGURATION_SSL_KEYSTORE_PASSWORD: "kafka-graphql-examples"
-      SPRING_CLOUD_STREAM_KAFKA_STREAMS_BINDER_CONFIGURATION_SSL_KEY_PASSWORD: "kafka-graphql-examples"
-      SPRING_CLOUD_STREAM_KAFKA_STREAMS_BINDER_CONFIGURATION_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
       AXON_AXONSERVER_SERVERS: "axon-server"
     volumes:
       - kafka-graphql-certs:/etc/kafka/secrets
@@ -44,16 +34,6 @@ services:
       - command-handler
       - projector
     environment:
-      SPRING_DATASOURCE_URL: "jdbc:postgresql://db-ge:25431/transactiondb"
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka-1:19093,kafka-2:19095,kafka-3:19097"
-      SPRING_KAFKA_PROPERTIES_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
-      SPRING_KAFKA_PROPERTIES_SECURITY_PROTOCOL: "SSL"
-      SPRING_KAFKA_PROPERTIES_SSL_TRUSTSTORE_LOCATION: "/etc/kafka/secrets/kafka.graphql-endpoint.truststore.jks"
-      SPRING_KAFKA_PROPERTIES_SSL_TRUSTSTORE_PASSWORD: "kafka-graphql-examples"
-      SPRING_KAFKA_PROPERTIES_SSL_KEYSTORE_LOCATION: "/etc/kafka/secrets/kafka.graphql-endpoint.keystore.jks"
-      SPRING_KAFKA_PROPERTIES_SSL_KEYSTORE_PASSWORD: "kafka-graphql-examples"
-      SPRING_KAFKA_PROPERTIES_SSL_KEY_PASSWORD: "kafka-graphql-examples"
-      SPRING_KAFKA_PROPERTIES_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
       AXON_AXONSERVER_SERVERS: "axon-server"
     volumes:
       - kafka-graphql-certs:/etc/kafka/secrets

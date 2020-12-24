@@ -8,5 +8,5 @@ public class MoneyCreditedEvent {
     @TargetAggregateIdentifier
     String iban;
     Long amount;
-    String transactionId;
+    String transferId;
 }

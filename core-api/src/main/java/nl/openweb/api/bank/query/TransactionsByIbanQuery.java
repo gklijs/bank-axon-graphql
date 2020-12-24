@@ -5,4 +5,5 @@ import lombok.Value;
 @Value
 public class TransactionsByIbanQuery {
     String iban;
+    int maxItems;
 }

@@ -12,4 +12,5 @@ public class TransferStartedEvent {
     String from;
     String to;
     String description;
+    String username;
 }

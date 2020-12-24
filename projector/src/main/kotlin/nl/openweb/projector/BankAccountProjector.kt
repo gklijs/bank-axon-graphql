@@ -6,10 +6,7 @@ import nl.openweb.api.bank.error.BankQueryException
 import nl.openweb.api.bank.event.BankAccountCreatedEvent
 import nl.openweb.api.bank.event.UserAddedEvent
 import nl.openweb.api.bank.event.UserRemovedEvent
-import nl.openweb.api.bank.query.BankAccount
-import nl.openweb.api.bank.query.BankAccountList
-import nl.openweb.api.bank.query.FindBankAccountQuery
-import nl.openweb.api.bank.query.FindBankAccountsForUserQuery
+import nl.openweb.api.bank.query.*
 import nl.openweb.api.user.error.UserExceptionStatusCode
 import org.axonframework.config.ProcessingGroup
 import org.axonframework.eventhandling.EventHandler
@@ -38,17 +35,17 @@ class BankAccountProjector(
     @EventHandler
     fun on(event: UserAddedEvent) {
         val bankAccount = bankAccountRepository.findById(event.iban)
-            .orElseThrow { IllegalArgumentException("bank account with {${event.iban}} could not be found") }
+            .orElseThrow { IllegalArgumentException("bank account with ${event.iban} could not be found") }
         bankAccount.users.add(event.username)
-        bankAccountRepository.save(bankAccount);
+        bankAccountRepository.save(bankAccount)
     }
 
     @EventHandler
     fun on(event: UserRemovedEvent) {
         val bankAccount = bankAccountRepository.findById(event.iban)
-            .orElseThrow { IllegalArgumentException("bank account with {${event.iban}} could not be found") }
+            .orElseThrow { IllegalArgumentException("bank account with ${event.iban} could not be found") }
         bankAccount.users.remove(event.username)
-        bankAccountRepository.save(bankAccount);
+        bankAccountRepository.save(bankAccount)
     }
 
     @QueryHandler
@@ -61,19 +58,34 @@ class BankAccountProjector(
                     b.balance,
                 )
             }
-            .orElseThrow { IllegalArgumentException("bank account with {${query.iban}} could not be found") }
+            .orElseThrow { IllegalArgumentException("bank account with ${query.iban} could not be found") }
     }
 
     @QueryHandler
     fun handle(query: FindBankAccountsForUserQuery): BankAccountList {
-        val bankAccountList = BankAccountList();
+        val bankAccountList = BankAccountList()
         bankAccountRepository.findAllByUsers(query.username)
             .forEach { b ->
                 bankAccountList.add(
                     BankAccount(b.iban, b.token, b.balance)
                 )
             }
-        return bankAccountList;
+        return bankAccountList
+    }
+
+    @QueryHandler
+    fun handle(query: TransactionsByIbanQuery): TransactionList {
+        val transactionList = TransactionList()
+        bankAccountRepository.findById(query.iban)
+            .ifPresentOrElse(
+                { b ->
+                    b.transactions.stream()
+                        .skip(0L.coerceAtLeast((b.transactions.size - query.maxItems).toLong()))
+                        .forEach { t -> transactionList.add(t.asApi()) }
+                },
+                { throw IllegalArgumentException("bank account with ${query.iban} could not be found") }
+            )
+        return transactionList
     }
 
     @ExceptionHandler(resultType = IllegalArgumentException::class)
