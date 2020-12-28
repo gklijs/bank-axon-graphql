@@ -1,0 +1,15 @@
+spring:
+  main:
+    banner-mode: off
+  jmx:
+    enabled: false
+
+# axon framework
+axon:
+  axonserver:
+    client-id: initializer
+
+logging:
+  level:
+    ROOT: WARN
+    nl.openweb.initializer: INFO

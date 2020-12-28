@@ -1,24 +1,15 @@
 package nl.openweb.graphql_endpoint.model;
 
-import lombok.Data;
+import lombok.Value;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "transaction")
-@Data
+@Value
 public class Transaction {
-
-    @Id
-    @GeneratedValue
-    private Integer id;
-    private String changed_by;
-    private String descr;
-    @Enumerated(value = EnumType.STRING)
-    private DType direction;
-    private String from_to;
-    private String iban;
-    private String new_balance;
-    @Transient
-    private Long amount;
+    int id;
+    String changed_by;
+    String descr;
+    DType direction;
+    String from_to;
+    String iban;
+    String new_balance;
+    long amount;
 }

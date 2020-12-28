@@ -1,65 +1,64 @@
 package nl.openweb.graphql_endpoint.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nl.openweb.data.BalanceChanged;
-import nl.openweb.graphql_endpoint.mapper.TransactionMapper;
+import nl.openweb.api.bank.query.*;
 import nl.openweb.graphql_endpoint.model.DType;
 import nl.openweb.graphql_endpoint.model.Transaction;
-import nl.openweb.graphql_endpoint.repository.TransactionRepository;
+import nl.openweb.graphql_endpoint.util.CurrencyUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.axonframework.extensions.reactor.queryhandling.gateway.ReactorQueryGateway;
+import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.reactivestreams.Publisher;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TransactionService {
 
-    private final TransactionRepository transactionRepository;
-    private final EmitterProcessor<Transaction> emitterProcessor = EmitterProcessor.create(false);
-    private final Flux<Transaction> flux = Flux.from(emitterProcessor).share();
+    private final ReactorQueryGateway queryGateway;
+    private Flux<Transaction> flux;
 
-    @KafkaListener(id = "graphql-endpoint-balance-changed-consumer", topics = "${kafka.bc-topic}")
-    public void onBalanceChanged(ConsumerRecord<String, Object> record) {
-        log.info("received balance changed from partition: {} at offset: {}"
-                , record.partition(), record.offset());
-        handleRecord(record);
-    }
-
-    private void handleRecord(ConsumerRecord<String, Object> record) {
-        if (record.value() instanceof BalanceChanged) {
-            handleBalanceChanged((BalanceChanged) record.value());
-        } else {
-            log.warn("Unexpected item {} with class {}, expected BalanceChanged",
-                     record.value(), record.value().getClass().getName());
-        }
+    @PostConstruct
+    public void setup() {
+        flux = queryGateway.subscriptionQuery(new LastTransactionQuery(), ResponseTypes.instanceOf(nl.openweb.api.bank.query.Transaction.class))
+                .map(TransactionService::mapTransaction)
+                .share();
+        flux.map(t -> {
+            log.info("Received transaction {} by subscription", t.getId());
+            return t;
+        }).subscribe();
     }
 
     public List<Transaction> allLastTransactions() {
-        return transactionRepository.allLastTransactions();
+        return queryGateway.query(new AllLastTransactionsQuery(), TransactionList.class)
+                .map(l -> l.stream().map(TransactionService::mapTransaction).collect(Collectors.toList()))
+                .block();
     }
 
     public Transaction transactionById(int id) {
-        return transactionRepository.findById(id).orElse(null);
+        return queryGateway.query(new TransactionByIdQuery(id), nl.openweb.api.bank.query.Transaction.class)
+                .map(TransactionService::mapTransaction)
+                .block();
     }
 
     public List<Transaction> transactionsByIban(String iban, int maxItems) {
-        return transactionRepository.findAllByIbanOrderByIdDesc(iban, PageRequest.of(0, maxItems));
+        return queryGateway.query(new TransactionsByIbanQuery(iban, maxItems), TransactionList.class)
+                .map(l -> l.stream().map(TransactionService::mapTransaction).collect(Collectors.toList()))
+                .block();
     }
 
     private Predicate<Transaction> filterFunction(DType direction, String iban, Long minAmount,
-            Long maxAmount, String descrIncluded) {
+                                                  Long maxAmount, String descrIncluded) {
         List<Predicate<Transaction>> predicates = new ArrayList<>();
         Optional.ofNullable(direction).ifPresent(d -> predicates.add(t -> t.getDirection() == d));
         Optional.ofNullable(iban).ifPresent(i -> predicates.add(t -> t.getIban().equals(i)));
@@ -76,14 +75,21 @@ public class TransactionService {
     }
 
     public Publisher<Transaction> stream(DType direction, String iban, Long minAmount, Long maxAmount,
-            String descrIncluded) {
+                                         String descrIncluded) {
         return Flux.from(flux)
                 .filter(filterFunction(direction, iban, minAmount, maxAmount, descrIncluded));
     }
 
-    private void handleBalanceChanged(BalanceChanged changed) {
-        Transaction transaction = TransactionMapper.fromBalanceChanged(changed);
-        transaction = transactionRepository.save(transaction);
-        emitterProcessor.onNext(transaction);
+    public static Transaction mapTransaction(nl.openweb.api.bank.query.Transaction apiTransaction) {
+        return new Transaction(
+                Math.toIntExact(apiTransaction.getId()),
+                CurrencyUtil.toCurrency(Math.abs(apiTransaction.getChangedBy())),
+                apiTransaction.getDescription(),
+                apiTransaction.getChangedBy() > 0 ? DType.CREDIT : DType.DEBIT,
+                apiTransaction.getFromTo(),
+                apiTransaction.getIban(),
+                CurrencyUtil.toCurrency(apiTransaction.getNewBalance()),
+                Math.abs(apiTransaction.getId())
+        );
     }
 }

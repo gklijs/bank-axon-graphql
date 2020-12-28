@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
-
-git submodule update --init &&
-  cd topology && lein install && cd .. &&
-  lein modules uberjar &&
+  mvn -f core-api clean install &&
+  mvn -f initializer clean package &&
   mvn -f command-handler clean package &&
   mvn -f graphql-endpoint clean package &&
-  mkdir secrets && cd secrets && ../create-certs.sh && cd .. && rm -rf secrets &&
-  docker-compose -f docker-bank.yml -f docker-prep.yml build --no-cache
+  mvn -f projector clean package &&
+  docker-compose -f docker-backend.yml -f docker-initializer.yml -f docker-frontend.yml build --no-cache

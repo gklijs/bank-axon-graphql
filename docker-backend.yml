@@ -1,0 +1,21 @@
+---
+version: '2.2'
+services:
+
+  command-handler:
+    build:
+      context: command-handler
+    container_name: command-handler
+    environment:
+      AXON_AXONSERVER_SERVERS: "axon-server"
+    mem_limit: 2000m
+    restart: always
+
+  projector:
+    build:
+      context: projector
+    container_name: projector
+    environment:
+      AXON_AXONSERVER_SERVERS: "axon-server"
+    mem_limit: 2000m
+    restart: always

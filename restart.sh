@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 ./clean.sh &&
-  docker-compose -f docker-cluster.yml up -d &&
+  docker-compose -f docker-axon-server.yml up -d &&
   sleep 10 &&
-  ./setup-db-ch.sh db-ch 25432 &&
-  ./setup-db-ge.sh db-ge 25431 &&
-  ./synchronize.sh &&
-  docker-compose -f docker-bank.yml up -d
+  docker-compose -f docker-backend.yml up -d &&
+  sleep 10 &&
+  ./initialize.sh &&
+  docker-compose -f docker-frontend.yml up -d

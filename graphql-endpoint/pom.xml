@@ -12,14 +12,12 @@
 	<artifactId>graphql-endpoint</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>graphql-endpoint</name>
-	<description>GraphQL endpoint of the open bank application </description>
+	<description>GraphQL endpoint of the open bank application</description>
 
 	<properties>
 		<java.version>11</java.version>
 		<graphql-spring-boot-starter.version>5.10.0</graphql-spring-boot-starter.version>
-		<graphql-java-tools.version>5.6.1</graphql-java-tools.version>
-		<topology.version>0.1.0-SNAPSHOT</topology.version>
-		<functionaljava.version>4.8.1</functionaljava.version>
+		<graphql-java-tools.version>5.7.1</graphql-java-tools.version>
 	</properties>
 
 	<dependencies>
@@ -34,62 +32,41 @@
 			<version>${graphql-java-tools.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
 		</dependency>
 		<dependency>
+			<!--
+               reactor-core is needed for subscription queries
+               when using Spring Boot 2.0, you'll automatically get reactor-core 3.1, which is fine
+               if you're on Spring Boot 1.5, you would get 2.x, which doesn't work, so you would have to manually set version 3.1
+             -->
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-core</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.axonframework</groupId>
+			<artifactId>axon-spring-boot-starter</artifactId>
+			<version>4.4.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.axonframework.extensions.reactor</groupId>
+			<artifactId>axon-reactor-spring-boot-starter</artifactId>
+			<version>4.4.2</version>
+		</dependency>
+		<dependency>
 			<groupId>nl.openweb</groupId>
-			<artifactId>topology</artifactId>
-			<version>${topology.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.kafka</groupId>
-					<artifactId>kafka-clients</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.functionaljava</groupId>
-			<artifactId>functionaljava</artifactId>
-			<version>${functionaljava.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.junit.vintage</groupId>
-					<artifactId>junit-vintage-engine</artifactId>
-				</exclusion>
-			</exclusions>
+			<artifactId>core-api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-configuration-processor</artifactId>
-			<optional>true</optional>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
