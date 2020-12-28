@@ -8,6 +8,7 @@ import nl.openweb.graphql_endpoint.model.Transaction;
 import nl.openweb.graphql_endpoint.util.CurrencyUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.axonframework.extensions.reactor.queryhandling.gateway.ReactorQueryGateway;
+import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.reactivestreams.Publisher;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
@@ -29,7 +30,13 @@ public class TransactionService {
 
     @PostConstruct
     public void setup() {
-        flux = queryGateway.subscriptionQueryMany(new LastTransactionQuery(), Transaction.class).share();
+        flux = queryGateway.subscriptionQuery(new LastTransactionQuery(), ResponseTypes.instanceOf(nl.openweb.api.bank.query.Transaction.class))
+                .map(TransactionService::mapTransaction)
+                .share();
+        flux.map(t -> {
+            log.info("Received transaction {} by subscription", t.getId());
+            return t;
+        }).subscribe();
     }
 
     public List<Transaction> allLastTransactions() {

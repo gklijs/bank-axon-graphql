@@ -85,6 +85,7 @@ class BankAccountProjector(
                 },
                 { throw IllegalArgumentException("bank account with ${query.iban} could not be found") }
             )
+        transactionList.reverse()
         return transactionList
     }
 

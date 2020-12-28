@@ -8,6 +8,7 @@ import nl.openweb.api.bank.query.TransferResultQuery;
 import nl.openweb.graphql_endpoint.model.MoneyTransferResult;
 import org.axonframework.extensions.reactor.commandhandling.gateway.ReactorCommandGateway;
 import org.axonframework.extensions.reactor.queryhandling.gateway.ReactorQueryGateway;
+import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.reactivestreams.Publisher;
 import org.springframework.stereotype.Component;
 
@@ -31,8 +32,8 @@ public class MoneyTransferService {
                 username
         );
         return commandGateway.send(command)
-                .flatMapMany(x -> queryGateway.subscriptionQueryMany(new TransferResultQuery(uuid), TransferResult.class))
-                .filter(r -> r.getState() != TransferResult.TransferState.BEING_PROCESSED)
+                .flatMapMany(x -> queryGateway.subscriptionQuery(new TransferResultQuery(uuid), ResponseTypes.instanceOf(TransferResult.class)))
+                .filter(r -> r.getState() == TransferResult.TransferState.COMPLETED || r.getState() == TransferResult.TransferState.FAILED)
                 .map(r -> new MoneyTransferResult(
                         r.getReason(),
                         r.getState() == TransferResult.TransferState.COMPLETED,

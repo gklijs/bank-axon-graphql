@@ -1,0 +1,11 @@
+---
+version: '2.2'
+services:
+
+  initializer:
+    build:
+      context: initializer
+    container_name: initializer
+    environment:
+      AXON_AXONSERVER_SERVERS: "axon-server"
+    mem_limit: 2000m

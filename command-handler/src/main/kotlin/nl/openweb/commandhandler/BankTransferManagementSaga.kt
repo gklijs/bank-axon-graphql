@@ -102,7 +102,7 @@ class BankTransferManagementSaga {
         val command: Any = if (this.debited) {
             ReturnMoneyCommand(this.from, this.amount, this.transferId, reason)
         } else {
-            MarkTransferFailedCommand(this.transferId, BankExceptionStatusCode.INVALID_FROM.description)
+            MarkTransferFailedCommand(this.transferId, BankExceptionStatusCode.validDescription(reason))
         }
         commandBus!!.dispatch(
             GenericCommandMessage.asCommandMessage(command),

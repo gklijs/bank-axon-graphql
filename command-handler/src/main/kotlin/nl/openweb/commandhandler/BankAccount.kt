@@ -21,7 +21,7 @@ class BankAccount {
     private var iban: String? = null
     private var token: String? = null
     private var balance = 0L
-    private var limit = -500L
+    private var limit = -50000L
     private val users = mutableListOf<String>()
 
     @CommandHandler

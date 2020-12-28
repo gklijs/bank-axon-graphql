@@ -1,0 +1,26 @@
+---
+version: '2.2'
+services:
+
+  graphql-endpoint:
+    build:
+      context: graphql-endpoint
+    container_name: graphql-endpoint
+    ports:
+      - "8888:8888"
+    environment:
+      AXON_AXONSERVER_SERVERS: "axon-server"
+    mem_limit: 2000m
+    restart: always
+
+  frontend:
+    build:
+      context: frontend
+    container_name: frontend
+    ports:
+      - "8181:80"
+    depends_on:
+      - graphql-endpoint
+    environment:
+      - NGINX_PORT=80
+    restart: always

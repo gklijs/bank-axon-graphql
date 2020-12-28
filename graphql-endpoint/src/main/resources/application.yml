@@ -1,4 +1,3 @@
-# postgres database
 spring:
   main:
     banner-mode: off
