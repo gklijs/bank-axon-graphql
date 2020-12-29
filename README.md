@@ -5,7 +5,9 @@
 This project is all about experimenting with the [Axon Framework](https://axoniq.io/product-overview/axon-framework),
 rebuilding the CQRS bank application I build earlier, mostly using Kafka. I used a similar setup before, but using
 mostly PostgreSQL and Kafka to handle the commands and events, and have queries directly against the aggregate stored in
-PostgreSQL. There are several versions of the former project
+PostgreSQL.
+
+There are several versions of the former project
 available, [kafka-graphql-examples](https://github.com/openweb-nl/kafka-graphql-examples), contains several
 implementations of the GraphQL backend in different languages.
 Also [obm_confluent_blog](https://github.com/gklijs/obm_confluent_blog), which has several implementations of the
@@ -16,10 +18,12 @@ command handler, and also has a related [blog post](https://www.confluent.io/blo
 This project is using Axon server as the central component to route the different kind of messages. The 'backend' part
 consists of both the command handler and the projector which precess the commands and related events. The 'frontend'
 part consists of the GraphQL endpoint that is creating commands based on the interaction from the frontend, and is also
-used to transfer the events and queries down to the frontend. There are also two kinds of subscriptions used. One for
-all the transactions, that is shared within the endpoint, and specific subscriptions for handling the success or failure
-of transfers, creating a subscription for the specific transfer id. The several components are on purpose loosely
-coupled without a common parent. They do share the core-api dependency.
+used to transfer the events and queries down to the frontend.
+
+There are also two kinds of subscriptions used. One for all the transactions, that is shared within the endpoint, and
+specific subscriptions for handling the success or failure of transfers, creating a subscription for the specific
+transfer id. The several components are on purpose loosely coupled without a common parent. They do share the core-api
+dependency.
 
 Contents
 
@@ -72,22 +76,22 @@ refunded.
 
 This endpoint is based on the schema which was used [before](graphql-endpoint/src/main/resources/bank.graphql). The
 complex ones are for creating the account, and transferring money. Most other ones are simple queries, that use the
-query bus to get the result from the projector, and simply it in the graphql api format. To create an account it's
-checked the username doesn't exist yet, if it does the password is checked. After the account is created the bank
-account is also directly created. It's possible to expand functionality by adding creating or removing bank accounts to
-the schema. For the money transfer a subscription is used to get the result.
+query bus to get the result from the projector, and simply it in the graphql api format.
+
+To create an account it's checked the username doesn't exist yet, if it does the password is checked. After the account
+is created the bank account is also directly created. It's possible to expand functionality by adding creating or
+removing bank accounts to the schema. For the money transfer a subscription is used to get the result.
 
 ### <a id="frontend">Front-end</a>
 
 This is a basic nginx container which contains the output from the Clojurescript re-frame code. The container is exposed
 at port 8181. The location of the GraphQL endpoint is configured
 in [core.cljs](frontend/src/cljs/nl/openweb/bank/core.cljs) this is configured to use localhost. Nginx now just serves
-static files, but could be used to proxy traffic to the graphql endpoint to prevent CORS. If you run into CORS trouble
-locally you may need to add the specific port you used to run the front-end to
-the [server.clj](graphql-endpoint/src/nl/openweb/graphql_endpoint/server.clj) in the endpoint at
-the `:io.pedestal.http/allowed-origins` key. To focus on the backend part, the frontend is currently not rebuild with
-the `prepare.sh` script. You can use the [build-and-copy-frontend.sh](frontend/build-and-copy-frontend.sh) script to
-rebuild. But you need leiningen and saasc installed to do so.
+static files, but could be used to proxy traffic to the graphql endpoint to prevent CORS.
+
+To focus on the backend part, the frontend is currently not rebuild with the `prepare.sh` script. You can use
+the [build-and-copy-frontend.sh](frontend/build-and-copy-frontend.sh) script to rebuild. But you need leiningen and
+saasc installed to do so.
 
 ## <a id="scripts">Scripts</a>
 
