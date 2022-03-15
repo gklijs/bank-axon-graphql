@@ -1,4 +1,4 @@
-(ns nl.openweb.bank.transactions
+(ns tech.gklijs.bank.transactions
   (:require [re-graph.core :as re-graph]))
 
 (def common-params
@@ -34,14 +34,14 @@
     (let [new-sub-id (inc (:subscription-id db))]
       (if-let [ats (:active-t-subscription db)]
         [[::re-graph/unsubscribe :ss (keyword (str "transactions-" ats))]
-         [::re-graph/query :qs query-query arguments-map [:nl.openweb.bank.events/reset-transactions]]
-         [::re-graph/subscribe :ss (keyword (str "transactions-" new-sub-id)) subscription-query arguments-map [:nl.openweb.bank.events/on-transaction]]
-         [:nl.openweb.bank.events/set-subscription-id new-sub-id]]
-        [[::re-graph/query :qs query-query arguments-map [:nl.openweb.bank.events/reset-transactions]]
-         [::re-graph/subscribe :ss (keyword (str "transactions-" new-sub-id)) subscription-query arguments-map [:nl.openweb.bank.events/on-transaction]]
-         [:nl.openweb.bank.events/set-subscription-id new-sub-id]]))
+         [::re-graph/query :qs query-query arguments-map [:tech.gklijs.bank.events/reset-transactions]]
+         [::re-graph/subscribe :ss (keyword (str "transactions-" new-sub-id)) subscription-query arguments-map [:tech.gklijs.bank.events/on-transaction]]
+         [:tech.gklijs.bank.events/set-subscription-id new-sub-id]]
+        [[::re-graph/query :qs query-query arguments-map [:tech.gklijs.bank.events/reset-transactions]]
+         [::re-graph/subscribe :ss (keyword (str "transactions-" new-sub-id)) subscription-query arguments-map [:tech.gklijs.bank.events/on-transaction]]
+         [:tech.gklijs.bank.events/set-subscription-id new-sub-id]]))
     (if-let [ats (:active-t-subscription db)]
       [[::re-graph/unsubscribe :ss (keyword (str "transactions-" ats))]
-       [:nl.openweb.bank.events/remove-active-t-subscription]
-       [:nl.openweb.bank.events/remove-transactions]]
-      [[:nl.openweb.bank.events/remove-transactions]])))
+       [:tech.gklijs.bank.events/remove-active-t-subscription]
+       [:tech.gklijs.bank.events/remove-transactions]]
+      [[:tech.gklijs.bank.events/remove-transactions]])))

@@ -1,8 +1,8 @@
-(ns nl.openweb.bank.routes
+(ns tech.gklijs.bank.routes
   (:require [bidi.bidi :as bidi]
             [pushy.core :as pushy]
             [re-frame.core :as re-frame]
-            [nl.openweb.bank.events :as events]))
+            [tech.gklijs.bank.events :as events]))
 
 (def routes ["/" {""                                  :home
                   "employee"                          :bank-employee

@@ -1,4 +1,4 @@
-(ns nl.openweb.bank.config)
+(ns tech.gklijs.bank.config)
 
 (def debug?
   ^boolean goog.DEBUG)

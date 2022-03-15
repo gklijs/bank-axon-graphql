@@ -21,8 +21,8 @@ public class CreateCompanyAccountService {
 
     private final ReactorCommandGateway commandGateway;
     private final ReactorQueryGateway queryGateway;
-    private static final String COMPANY_IBAN = "NL66OPEN0000000000";
-    private static final String COMPANY_USERNAME = "openweb";
+    private static final String COMPANY_IBAN = "NL09AXON0000000000";
+    private static final String COMPANY_USERNAME = "axonadmin";
 
     @PostConstruct
     public void createCompanyAccountIfNotExisting() {

@@ -1,7 +1,7 @@
-(ns nl.openweb.bank.templates
+(ns tech.gklijs.bank.templates
   (:require [clojure.string :as string]
-            [nl.openweb.bank.events :as events]
-            [nl.openweb.bank.routes :as routes]
+            [tech.gklijs.bank.events :as events]
+            [tech.gklijs.bank.routes :as routes]
             [re-frame.core :as re-frame]
             [re-graph.core :as re-graph]))
 
@@ -19,25 +19,25 @@
     [:a.navbar-item
      {:class (when (= selected-nav :home) "is-active")
       :href  (routes/url-for :home)}
-     [:img {:src "/img/logo.svg" :style {:width "140px"}}]]
+     [:img {:src "/img/logo.png" :style {:width "140px"}}]]
     [:a.navbar-item.is-hidden-tablet
      {:on-click #(re-frame/dispatch [::events/toggle-show-left])}
      (if show-left
-       [:span.icon {:style {:color "#95c23d"}} [:i.mdi.mdi-24px.mdi-arrow-up-drop-circle-outline]]
-       [:span.icon {:style {:color "#95c23d"}} [:i.mdi.mdi-24px.mdi-arrow-down-drop-circle-outline]])]
+       [:span.icon {:style {:color "#23aca3"}} [:i.mdi.mdi-24px.mdi-arrow-up-drop-circle-outline]]
+       [:span.icon {:style {:color "#23aca3"}} [:i.mdi.mdi-24px.mdi-arrow-down-drop-circle-outline]])]
     [:a.navbar-item.is-hidden-desktop
-     {:target "_blank", :href "https://www.openweb.nl"}
-     [:span.icon {:style {:color "#95c23d"}} [:i.mdi.mdi-24px.mdi-domain]]]
+     {:target "_blank", :href "https://www.axoniq.io/"}
+     [:span.icon {:style {:color "#fa5e08"}} [:i.mdi.mdi-24px.mdi-domain]]]
     [:a.navbar-item.is-hidden-desktop
-     {:target "_blank", :href "https://twitter.com/OpenWebNL"}
+     {:target "_blank", :href "https://twitter.com/axon_iq"}
      [:span.icon {:style {:color "#1da1f2"}} [:i.mdi.mdi-24px.mdi-twitter]]]
     [:a.navbar-item.is-hidden-desktop
-     {:target "_blank", :href "https://www.linkedin.com/company/open-web-it-services/"}
+     {:target "_blank", :href "https://www.linkedin.com/company/axoniq/"}
      [:span.icon {:style {:color "#0077B5"}} [:i.mdi.mdi-24px.mdi-linkedin-box]]]
     [:a.navbar-item.is-hidden-desktop
      {:target "_blank", :href "https://github.com/gklijs/bank-axon-graphql"}
      [:span.icon {:style {:color "#24292e"}} [:i.mdi.mdi-24px.mdi-github-circle]]]
-    [:button.button.navbar-burger
+    [:button.burger.navbar-burger
      {:on-click #(re-frame/dispatch [::events/toggle-mob-expand])
       :class    (when expand "is-active")}
      [:span]
@@ -49,13 +49,13 @@
      (map #(navbar-item % selected-nav) [:bank-employee :client])]
     [:div.navbar-end
      [:a.navbar-item.is-hidden-touch
-      {:target "_blank", :href "https://www.openweb.nl"}
-      [:span.icon {:style {:color "#95c23d"}} [:i.mdi.mdi-24px.mdi-domain]]]
+      {:target "_blank", :href "https://www.axoniq.io/"}
+      [:span.icon {:style {:color "#fa5e08"}} [:i.mdi.mdi-24px.mdi-domain]]]
      [:a.navbar-item.is-hidden-touch
-      {:target "_blank", :href "https://twitter.com/OpenWebNL"}
+      {:target "_blank", :href "https://twitter.com/axon_iq"}
       [:span.icon {:style {:color "#1da1f2"}} [:i.mdi.mdi-24px.mdi-twitter]]]
      [:a.navbar-item.is-hidden-touch
-      {:target "_blank", :href "https://www.linkedin.com/company/open-web-it-services/"}
+      {:target "_blank", :href "https://www.linkedin.com/company/axoniq/"}
       [:span.icon {:style {:color "#0077B5"}} [:i.mdi.mdi-24px.mdi-linkedin-box]]]
      [:a.navbar-item.is-hidden-touch
       {:target "_blank", :href "https://github.com/openweb-nl/kafka-graphql-examples"}

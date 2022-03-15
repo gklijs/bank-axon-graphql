@@ -1,11 +1,7 @@
-(defproject nl.openweb/bank "0.1.0-SNAPSHOT"
+(defproject tech.gklijs/bank "0.1.0-SNAPSHOT"
   :description "front-end for the kafka workshop"
   :url "https://github.com/gklijs/bank-axon-graphql/tree/master/frontendd"
-  :dependencies [[cljsjs/vega "5.9.0-0" :exclusions [com.google.errorprone/error_prone_annotations com.google.code.findbugs/jsr305]]
-                 [cljsjs/vega-lite "4.0.2-0" :exclusions [com.google.errorprone/error_prone_annotations com.google.code.findbugs/jsr305]]
-                 [cljsjs/vega-embed "6.0.0-0" :exclusions [com.google.errorprone/error_prone_annotations com.google.code.findbugs/jsr305]]
-                 [cljsjs/vega-tooltip "0.20.0-0" :exclusions [com.google.errorprone/error_prone_annotations com.google.code.findbugs/jsr305]]
-                 [org.clojure/clojure "1.10.1"]
+  :dependencies [[org.clojure/clojure "1.10.3"]
                  [org.clojure/clojurescript "1.10.597" :exclusions [com.google.errorprone/error_prone_annotations com.google.code.findbugs/jsr305]]
                  [reagent "0.9.1"]
                  [re-frame "0.11.0"]
@@ -32,7 +28,7 @@
    [{:id           "dev"
      :source-paths ["src/cljs"]
      :figwheel     {:on-jsload "nl.openweb.bank.core/mount-root"}
-     :compiler     {:main                 nl.openweb.bank.core
+     :compiler     {:main                 tech.gklijs.bank.core
                     :output-to            "resources/public/js/compiled/app.js"
                     :output-dir           "resources/public/js/compiled/out"
                     :optimizations        :none
@@ -45,7 +41,7 @@
 
     {:id           "min"
      :source-paths ["src/cljs"]
-     :compiler     {:main            nl.openweb.bank.core
+     :compiler     {:main            tech.gklijs.bank.core
                     :output-to       "resources/public/js/compiled/app.js"
                     :optimizations   :advanced
                     :closure-defines {goog.DEBUG false}

@@ -1,8 +1,8 @@
-(ns nl.openweb.bank.events
+(ns tech.gklijs.bank.events
   (:require [re-frame.core :as re-frame]
             [re-graph.core :as re-graph]
-            [nl.openweb.bank.transactions :refer [get-dispatches]]
-            [nl.openweb.bank.db :as db]))
+            [tech.gklijs.bank.transactions :refer [get-dispatches]]
+            [tech.gklijs.bank.db :as db]))
 
 (re-frame/reg-event-db
   ::initialize-db

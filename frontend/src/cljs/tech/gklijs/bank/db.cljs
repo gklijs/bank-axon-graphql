@@ -1,11 +1,11 @@
-(ns nl.openweb.bank.db)
+(ns tech.gklijs.bank.db)
 
 (def default-db
   {:selected-nav          :home
    :mob-expand            false
    :show-left             true
    :all-accounts          nil
-   :company-iban          "NL66OPEN0000000000"
+   :company-iban          "NL09AXON0000000000"
    :employee-iban         nil
    :transactions          nil
    :subscription-id       0

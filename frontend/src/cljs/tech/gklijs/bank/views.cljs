@@ -1,7 +1,7 @@
-(ns nl.openweb.bank.views
+(ns tech.gklijs.bank.views
   (:require [re-frame.core :as re-frame]
-            [nl.openweb.bank.subs :as subs]
-            [nl.openweb.bank.templates :as templates]))
+            [tech.gklijs.bank.subs :as subs]
+            [tech.gklijs.bank.templates :as templates]))
 
 (defn main-panel []
   [:div

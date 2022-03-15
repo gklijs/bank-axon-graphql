@@ -11,7 +11,3 @@ services:
     mem_limit: 400m
     restart: always
 
-volumes:
-  kafka-graphql-certs:
-    external: true
-

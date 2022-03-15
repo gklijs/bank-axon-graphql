@@ -15,12 +15,12 @@ public class IbanUtil {
     }
 
     private String toIban(String digits) {
-        int checkNr = new BigInteger("24251423" + digits + "232100").remainder(BigInteger.valueOf(97)).intValue();
+        int checkNr = new BigInteger("10332423" + digits + "232100").remainder(BigInteger.valueOf(97)).intValue();
         String checkPart = Integer.toString(98 - checkNr);
         if (checkPart.length() == 1) {
             checkPart = '0' + checkPart;
         }
-        return "NL" + checkPart + "OPEN" + digits;
+        return "NL" + checkPart + "AXON" + digits;
     }
 
     public boolean isValidOpenIban(String iban){

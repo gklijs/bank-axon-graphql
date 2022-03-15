@@ -86,7 +86,7 @@ removing bank accounts to the schema. For the money transfer a subscription is u
 
 This is a basic nginx container which contains the output from the Clojurescript re-frame code. The container is exposed
 at port 8181. The location of the GraphQL endpoint is configured
-in [core.cljs](frontend/src/cljs/nl/openweb/bank/core.cljs) this is configured to use localhost. Nginx now just serves
+in [core.cljs](frontend/src/cljs/tech/gklijs/bank/core.cljs) this is configured to use localhost. Nginx now just serves
 static files, but could be used to proxy traffic to the graphql endpoint to prevent CORS.
 
 To focus on the backend part, the frontend is currently not rebuild with the `prepare.sh` script. You can use
