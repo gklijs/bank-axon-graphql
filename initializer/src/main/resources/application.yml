@@ -12,4 +12,4 @@ axon:
 logging:
   level:
     ROOT: WARN
-    nl.openweb.initializer: INFO
+    tech.gklijs.initializer: INFO

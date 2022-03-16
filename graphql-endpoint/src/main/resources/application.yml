@@ -26,4 +26,4 @@ axon:
 logging:
   level:
     ROOT: WARN
-    nl.openweb.graphql_endpoint: INFO
+    tech.gklijs.graphql_endpoint: INFO

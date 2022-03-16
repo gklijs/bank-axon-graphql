@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.0</version>
+		<version>2.6.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>nl.openweb</groupId>
+	<groupId>tech.gklijs</groupId>
 	<artifactId>graphql-endpoint</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>graphql-endpoint</name>
-	<description>GraphQL endpoint of the open bank application</description>
+	<description>GraphQL endpoint of the axon bank application</description>
 
 	<properties>
 		<java.version>11</java.version>
@@ -36,11 +36,6 @@
 			<artifactId>spring-security-core</artifactId>
 		</dependency>
 		<dependency>
-			<!--
-               reactor-core is needed for subscription queries
-               when using Spring Boot 2.0, you'll automatically get reactor-core 3.1, which is fine
-               if you're on Spring Boot 1.5, you would get 2.x, which doesn't work, so you would have to manually set version 3.1
-             -->
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-core</artifactId>
 		</dependency>
@@ -51,15 +46,15 @@
 		<dependency>
 			<groupId>org.axonframework</groupId>
 			<artifactId>axon-spring-boot-starter</artifactId>
-			<version>4.4.5</version>
+			<version>4.5.8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.axonframework.extensions.reactor</groupId>
 			<artifactId>axon-reactor-spring-boot-starter</artifactId>
-			<version>4.4.2</version>
+			<version>4.5.1</version>
 		</dependency>
 		<dependency>
-			<groupId>nl.openweb</groupId>
+			<groupId>tech.gklijs</groupId>
 			<artifactId>core-api</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>

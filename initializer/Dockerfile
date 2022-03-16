@@ -1,5 +1,5 @@
 FROM azul/zulu-openjdk-alpine:11-jre
-MAINTAINER Gerard Klijs <gerard@openweb.nl>
+MAINTAINER Gerard Klijs <gerard.klijs@axoniq.io>
 
 ADD target/initializer-docker.jar /app.jar
 

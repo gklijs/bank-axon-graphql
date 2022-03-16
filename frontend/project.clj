@@ -27,7 +27,7 @@
   {:builds
    [{:id           "dev"
      :source-paths ["src/cljs"]
-     :figwheel     {:on-jsload "nl.openweb.bank.core/mount-root"}
+     :figwheel     {:on-jsload "tech.gklijs.bank.core/mount-root"}
      :compiler     {:main                 tech.gklijs.bank.core
                     :output-to            "resources/public/js/compiled/app.js"
                     :output-dir           "resources/public/js/compiled/out"

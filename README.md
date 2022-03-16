@@ -1,5 +1,13 @@
 # Bank Axon Graphql
 
+## Quickstart
+
+If you already have Maven, Java and Docker locally available, running `./prepare.sh && ./restart.sh` in the root folder
+should build and start all. Once done the [frontend is available at port 8181](http://localhost:8181/)
+and [axon server at port 8024](http://localhost:8024/)
+
+## Intro
+
 ![Overview](overview.png)
 
 This project is all about experimenting with the [Axon Framework](https://axoniq.io/product-overview/axon-framework),
@@ -50,8 +58,8 @@ named, so you can use something like, `docker stop command-handler` to stop spec
 
 ## <a id="modules">Modules</a>
 
-The modules are describe in order of data flow.
-The first, topology will be used to generate the data types, the last but one, frontend will expose the data to make it visible.
+The modules are describe in order of data flow. The first, topology will be used to generate the data types, the last
+but one, frontend will expose the data to make it visible.
 
 ### <a id="core-api">Core api</a>
 
@@ -68,8 +76,8 @@ query on the company account, so if it doesn't exist it will give an error.
 ### <a id="command-handler">Command handler</a>
 
 This module will hande the commands. It includes saga to handle the transfer of money. It is based on the past rules. So
-for example you can transfer money to almost any account. When it's not an 'openbank' account the money will just '
-vanish'. When it's an 'openbank' account it will try to debit the money to that account. In case of failure the money is
+for example you can transfer money to almost any account. When it's not an 'axon' account the money will just '
+vanish'. When it's an 'axon' account it will try to debit the money to that account. In case of failure the money is
 refunded.
 
 ### <a id="graphql-endpoint">Graphql endpoint</a>

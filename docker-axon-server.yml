@@ -3,7 +3,7 @@ version: '2.2'
 services:
 
   axon-server:
-    image: axoniq/axonserver:4.4.5
+    image: axoniq/axonserver:4.5.10
     container_name: axon
     ports:
       - "8024:8024"
