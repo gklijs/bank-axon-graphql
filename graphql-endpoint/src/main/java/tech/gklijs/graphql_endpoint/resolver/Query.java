@@ -4,7 +4,6 @@ import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
 import tech.gklijs.graphql_endpoint.model.Transaction;
 import tech.gklijs.graphql_endpoint.service.TransactionService;
 
@@ -27,7 +26,7 @@ public class Query {
     }
 
     @DgsQuery
-    List<Transaction> transactions_by_iban(@InputArgument String iban, @InputArgument int maxItems) {
-        return transactionService.transactionsByIban(iban, maxItems);
+    List<Transaction> transactions_by_iban(@InputArgument String iban, @InputArgument int max_items) {
+        return transactionService.transactionsByIban(iban, max_items);
     }
 }

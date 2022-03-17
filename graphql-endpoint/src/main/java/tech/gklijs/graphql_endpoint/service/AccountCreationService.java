@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.axonframework.extensions.reactor.commandhandling.gateway.ReactorCommandGateway;
 import org.axonframework.extensions.reactor.queryhandling.gateway.ReactorQueryGateway;
 import org.axonframework.queryhandling.QueryExecutionException;
-import org.reactivestreams.Publisher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -19,6 +18,8 @@ import tech.gklijs.api.user.error.UserExceptionStatusCode;
 import tech.gklijs.api.user.query.FindUserAccountQuery;
 import tech.gklijs.api.user.query.UserAccount;
 import tech.gklijs.graphql_endpoint.model.AccountResult;
+
+import java.time.Duration;
 
 @Slf4j
 @Component
@@ -71,13 +72,14 @@ public class AccountCreationService {
         return Mono.just(result);
     }
 
-    public Publisher<AccountResult> getAccount(String password, String username) {
+    public AccountResult getAccount(String password, String username) {
         return getExistingAccount(username)
                 .onErrorResume(this::wasNotFound, e -> createAccount(password, username))
                 .map(account -> checkPassword(account, password))
                 .flatMap(account -> getBankAccounts(account.getUsername()))
                 .map(accounts -> accounts.get(0))
                 .map(account -> new AccountResult(account.getIban(), account.getToken(), null))
-                .onErrorResume(this::mapError);
+                .onErrorResume(this::mapError)
+                .block(Duration.ofSeconds(10L));
     }
 }

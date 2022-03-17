@@ -9,7 +9,7 @@ type Query {
   transactions_by_iban(iban: String!, max_items: Int!): [Transaction]
 }
 
-type Subscription {
+type Mutation {
   """
   Get the result of account creation, account may be just created or already exist
   """
@@ -46,7 +46,9 @@ type Subscription {
     """
     uuid: String!
   ): MoneyTransferResult
+}
 
+type Subscription {
   """Get transactions as they happen, with optional filtering"""
   stream_transactions(
     """optional filter on DEBIT or CREDIT"""

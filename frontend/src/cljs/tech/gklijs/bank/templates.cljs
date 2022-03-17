@@ -68,9 +68,7 @@
      {:key amount}
      [:a.button.is-info.is-fullwidth.is-rounded.is-danger
       {:id       (str "deposit-" amount)
-       :on-click #(re-frame/dispatch [::re-graph/subscribe
-                                      :ss
-                                      (keyword (str "deposit-" uuid))
+       :on-click #(re-frame/dispatch [::re-graph/mutate
                                       "($amount: Int! $uuid: String! $username: String! $iban: String!){
                                             money_transfer(amount: $amount username: $username  descr: \"deposit by re-graph\"
                                            from: \"cash\" token: \"cash\" to: $iban uuid: $uuid)
@@ -250,9 +248,7 @@
                    (if (:valid transfer-data)
                      {:on-click #(do
                                    (.reset (.getElementById js/document "transfer-form"))
-                                   (re-frame/dispatch [::re-graph/subscribe
-                                                       :ss
-                                                       (keyword (str "transfer-" uuid))
+                                   (re-frame/dispatch [::re-graph/mutate
                                                        "($amount: Int! $uuid: String! $username: String! $to: String! $token: String! $from: String! $descr: String!){
                                                           money_transfer(amount: $amount uuid: $uuid username: $username to: $to token: $token from: $from descr: $descr)
                                                           {reason success uuid}}"

@@ -5,12 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.axonframework.extensions.reactor.commandhandling.gateway.ReactorCommandGateway;
 import org.axonframework.extensions.reactor.queryhandling.gateway.ReactorQueryGateway;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
-import org.reactivestreams.Publisher;
 import org.springframework.stereotype.Component;
 import tech.gklijs.api.bank.command.MoneyTransferCommand;
 import tech.gklijs.api.bank.query.TransferResult;
 import tech.gklijs.api.bank.query.TransferResultQuery;
 import tech.gklijs.graphql_endpoint.model.MoneyTransferResult;
+
+import java.time.Duration;
 
 @Slf4j
 @Component
@@ -20,7 +21,7 @@ public class MoneyTransferService {
     private final ReactorCommandGateway commandGateway;
     private final ReactorQueryGateway queryGateway;
 
-    public Publisher<MoneyTransferResult> transfer(long amount, String descr, String from, String to, String
+    public MoneyTransferResult transfer(long amount, String descr, String from, String to, String
             token, String username, String uuid) {
         MoneyTransferCommand command = new MoneyTransferCommand(
                 uuid,
@@ -40,6 +41,7 @@ public class MoneyTransferService {
                                      r.getReason(),
                                      r.getState() == TransferResult.TransferState.COMPLETED,
                                      uuid
-                             ));
+                             ))
+                             .blockFirst(Duration.ofSeconds(10L));
     }
 }
