@@ -1,6 +1,8 @@
 package tech.gklijs.graphql_endpoint.resolver;
 
-import com.coxautodev.graphql.tools.GraphQLSubscriptionResolver;
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsSubscription;
+import com.netflix.graphql.dgs.InputArgument;
 import lombok.AllArgsConstructor;
 import org.reactivestreams.Publisher;
 import org.springframework.stereotype.Component;
@@ -12,25 +14,31 @@ import tech.gklijs.graphql_endpoint.service.AccountCreationService;
 import tech.gklijs.graphql_endpoint.service.MoneyTransferService;
 import tech.gklijs.graphql_endpoint.service.TransactionService;
 
+@DgsComponent
 @AllArgsConstructor
-@Component
-public class Subscription implements GraphQLSubscriptionResolver {
+public class Subscription {
 
     private final AccountCreationService accountCreationService;
     private final MoneyTransferService moneyTransferService;
     private final TransactionService transactionService;
 
-    Publisher<AccountResult> get_account(String password, String username) {
+    @DgsSubscription
+    Publisher<AccountResult> get_account(@InputArgument String password, @InputArgument String username) {
         return accountCreationService.getAccount(password, username);
     }
 
-    Publisher<MoneyTransferResult> money_transfer(long amount, String descr, String from, String to, String token,
+    @DgsSubscription
+    Publisher<MoneyTransferResult> money_transfer(@InputArgument long amount, @InputArgument String descr,
+                                                  @InputArgument String from, @InputArgument String to,
+                                                  @InputArgument String token,
                                                   String username, String uuid) {
         return moneyTransferService.transfer(amount, descr, from, to, token, username, uuid);
     }
 
-    Publisher<Transaction> stream_transactions(DType direction, String iban, Long minAmount, Long maxAmount,
-                                               String descrIncludes) {
+    @DgsSubscription
+    Publisher<Transaction> stream_transactions(@InputArgument DType direction, @InputArgument String iban,
+                                               @InputArgument Long minAmount, @InputArgument Long maxAmount,
+                                               @InputArgument String descrIncludes) {
         return transactionService.stream(direction, iban, minAmount, maxAmount, descrIncludes);
     }
 }

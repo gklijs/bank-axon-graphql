@@ -4,7 +4,7 @@
 
 If you already have Maven, Java and Docker locally available, running `./prepare.sh && ./restart.sh` in the root folder
 should build and start all. Once done the [frontend is available at port 8181](http://localhost:8181/)
-and [axon server at port 8024](http://localhost:8024/)
+, [axon server at port 8024](http://localhost:8024/) and [Graph*I*QL at 8888/graphiql](http://localhost:8888/graphiql).
 
 ## Intro
 
@@ -36,13 +36,13 @@ dependency.
 Contents
 
 * [Development](#development)
-  * [Building locally](#building-locally)
+    * [Building locally](#building-locally)
 * [Modules](#modules)
-  * [Core api](#core-api)
-  * [Initializer](#initializer)
-  * [Command handler](#command-handler)
-  * [Graphql endpoint](#graphql-endpoint)
-  * [Frontend](#frontend)
+    * [Core api](#core-api)
+    * [Initializer](#initializer)
+    * [Command handler](#command-handler)
+    * [Graphql endpoint](#graphql-endpoint)
+    * [Frontend](#frontend)
 * [Scripts](#scripts)
 
 ## <a id="development">Development</a>

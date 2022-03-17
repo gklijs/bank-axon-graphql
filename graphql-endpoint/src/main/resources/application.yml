@@ -7,6 +7,10 @@ spring:
 server:
   port: 8888
 
+
+dgs.graphql:
+  path: /graphql
+  introspection.enabled: true
 graphql:
   tools:
     schema-location-pattern: bank.graphql

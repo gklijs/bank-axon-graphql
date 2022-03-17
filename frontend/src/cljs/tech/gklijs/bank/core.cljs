@@ -24,7 +24,7 @@
   (re-frame/dispatch-sync [::events/initialize-db])
   (re-frame/dispatch [::re-graph/init :qs {:http-url "http://localhost:8888/graphql"
                                            :ws-url   nil}])
-  (re-frame/dispatch [::re-graph/init :ss {:ws-url "ws://localhost:8888/graphql-ws"}])
+  (re-frame/dispatch [::re-graph/init :ss {:ws-url "ws://localhost:8888/subscriptions"}])
   (doseq [dispatch (get-dispatches default-db)] (re-frame/dispatch dispatch))
   (dev-setup)
   (mount-root))
