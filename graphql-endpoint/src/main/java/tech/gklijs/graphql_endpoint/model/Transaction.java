@@ -8,7 +8,7 @@ public class Transaction {
     int id;
     String changed_by;
     String descr;
-    DType direction;
+    dtype direction;
     String from_to;
     String iban;
     String new_balance;

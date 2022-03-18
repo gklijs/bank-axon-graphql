@@ -14,7 +14,7 @@ import tech.gklijs.api.bank.query.Transaction;
 import tech.gklijs.api.bank.query.TransactionByIdQuery;
 import tech.gklijs.api.bank.query.TransactionList;
 import tech.gklijs.api.bank.query.TransactionsByIbanQuery;
-import tech.gklijs.graphql_endpoint.model.DType;
+import tech.gklijs.graphql_endpoint.model.dtype;
 import tech.gklijs.graphql_endpoint.util.CurrencyUtil;
 
 import java.util.ArrayList;
@@ -61,9 +61,22 @@ public class TransactionService {
                            .block();
     }
 
-    private Predicate<tech.gklijs.graphql_endpoint.model.Transaction> filterFunction(DType direction, String iban,
-                                                                                     Long minAmount,
-                                                                                     Long maxAmount,
+    public static tech.gklijs.graphql_endpoint.model.Transaction mapTransaction(Transaction apiTransaction) {
+        return new tech.gklijs.graphql_endpoint.model.Transaction(
+                Math.toIntExact(apiTransaction.getId()),
+                CurrencyUtil.toCurrency(Math.abs(apiTransaction.getChangedBy())),
+                apiTransaction.getDescription(),
+                apiTransaction.getChangedBy() > 0 ? dtype.CREDIT : dtype.DEBIT,
+                apiTransaction.getFromTo(),
+                apiTransaction.getIban(),
+                CurrencyUtil.toCurrency(apiTransaction.getNewBalance()),
+                Math.abs(apiTransaction.getId())
+        );
+    }
+
+    private Predicate<tech.gklijs.graphql_endpoint.model.Transaction> filterFunction(dtype direction, String iban,
+                                                                                     Integer minAmount,
+                                                                                     Integer maxAmount,
                                                                                      String descrIncluded) {
         List<Predicate<tech.gklijs.graphql_endpoint.model.Transaction>> predicates = new ArrayList<>();
         Optional.ofNullable(direction).ifPresent(d -> predicates.add(t -> t.getDirection() == d));
@@ -80,23 +93,10 @@ public class TransactionService {
                 .orElse(Boolean.TRUE);
     }
 
-    public Publisher<tech.gklijs.graphql_endpoint.model.Transaction> stream(DType direction, String iban,
-                                                                            Long minAmount, Long maxAmount,
+    public Publisher<tech.gklijs.graphql_endpoint.model.Transaction> stream(dtype direction, String iban,
+                                                                            Integer minAmount, Integer maxAmount,
                                                                             String descrIncluded) {
         return Flux.from(flux)
                    .filter(filterFunction(direction, iban, minAmount, maxAmount, descrIncluded));
-    }
-
-    public static tech.gklijs.graphql_endpoint.model.Transaction mapTransaction(Transaction apiTransaction) {
-        return new tech.gklijs.graphql_endpoint.model.Transaction(
-                Math.toIntExact(apiTransaction.getId()),
-                CurrencyUtil.toCurrency(Math.abs(apiTransaction.getChangedBy())),
-                apiTransaction.getDescription(),
-                apiTransaction.getChangedBy() > 0 ? DType.CREDIT : DType.DEBIT,
-                apiTransaction.getFromTo(),
-                apiTransaction.getIban(),
-                CurrencyUtil.toCurrency(apiTransaction.getNewBalance()),
-                Math.abs(apiTransaction.getId())
-        );
     }
 }

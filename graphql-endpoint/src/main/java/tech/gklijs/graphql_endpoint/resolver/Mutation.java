@@ -29,7 +29,7 @@ public class Mutation {
     }
 
     @DgsMutation
-    MoneyTransferResult money_transfer(@InputArgument long amount, @InputArgument String descr,
+    MoneyTransferResult money_transfer(@InputArgument Integer amount, @InputArgument String descr,
                                        @InputArgument String from, @InputArgument String to,
                                        @InputArgument String token,
                                        @InputArgument String username, @InputArgument String uuid) {

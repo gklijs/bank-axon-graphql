@@ -6,13 +6,12 @@ import org.axonframework.eventhandling.EventHandler
 import org.axonframework.queryhandling.QueryHandler
 import org.axonframework.queryhandling.QueryUpdateEmitter
 import org.springframework.stereotype.Component
+import tech.gklijs.api.bank.error.BankExceptionStatusCode
+import tech.gklijs.api.bank.error.BankQueryException
 import tech.gklijs.api.bank.event.MoneyCreditedEvent
 import tech.gklijs.api.bank.event.MoneyDebitedEvent
 import tech.gklijs.api.bank.event.MoneyReturnedEvent
-import tech.gklijs.api.bank.query.AllLastTransactionsQuery
-import tech.gklijs.api.bank.query.LastTransactionQuery
-import tech.gklijs.api.bank.query.Transaction
-import tech.gklijs.api.bank.query.TransactionList
+import tech.gklijs.api.bank.query.*
 
 @Component
 @ProcessingGroup("transactions")
@@ -87,6 +86,19 @@ class TransactionProjector(
         account.transactions.add(transaction)
         bankAccountRepository.save(account)
         queryUpdateEmitter.emit(LastTransactionQuery::class.java, { true }, transaction.asApi())
+    }
+
+    @QueryHandler
+    fun handle(query: TransactionByIdQuery): Transaction {
+        return transactionRepository.findById(query.id.toLong())
+            .map { t -> t.asApi() }
+            .orElseThrow {
+                BankQueryException(
+                    "transaction not found",
+                    null,
+                    BankExceptionStatusCode.BANK_ACCOUNT_NOT_FOUND
+                )
+            }
     }
 
     @QueryHandler

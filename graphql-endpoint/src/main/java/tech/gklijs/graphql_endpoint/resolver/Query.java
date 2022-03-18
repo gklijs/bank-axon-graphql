@@ -21,12 +21,12 @@ public class Query {
     }
 
     @DgsQuery
-    Transaction transaction_by_id(@InputArgument int id) {
+    Transaction transaction_by_id(@InputArgument Integer id) {
         return transactionService.transactionById(id);
     }
 
     @DgsQuery
-    List<Transaction> transactions_by_iban(@InputArgument String iban, @InputArgument int max_items) {
+    List<Transaction> transactions_by_iban(@InputArgument String iban, @InputArgument Integer max_items) {
         return transactionService.transactionsByIban(iban, max_items);
     }
 }

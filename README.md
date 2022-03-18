@@ -18,7 +18,7 @@ PostgreSQL.
 There are several versions of the former project
 available, [kafka-graphql-examples](https://github.com/openweb-nl/kafka-graphql-examples), contains several
 implementations of the GraphQL backend in different languages.
-Also [obm_confluent_blog](https://github.com/gklijs/obm_confluent_blog), which has several implementations of the
+Also, [obm_confluent_blog](https://github.com/gklijs/obm_confluent_blog), which has several implementations of the
 command handler, and also has a related [blog post](https://www.confluent.io/blog/getting-started-with-rust-and-kafka).
 
 ## Summary

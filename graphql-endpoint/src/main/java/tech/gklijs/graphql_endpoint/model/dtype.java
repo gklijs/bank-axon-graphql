@@ -1,6 +1,6 @@
 package tech.gklijs.graphql_endpoint.model;
 
-public enum DType {
+public enum dtype {
     DEBIT,
     CREDIT
 }
