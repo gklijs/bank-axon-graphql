@@ -15,5 +15,7 @@ spring.jpa:
 
 # axon framework
 axon:
+  serializer:
+    events: jackson
   axonserver:
     client-id: projector

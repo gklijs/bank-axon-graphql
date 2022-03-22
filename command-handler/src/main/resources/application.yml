@@ -1,5 +1,7 @@
 # axon framework
 axon:
+  serializer:
+    events: jackson
   axonserver:
     client-id: command-handler
 #logging.level.org.apache.kafka: debug
