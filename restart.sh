@@ -2,8 +2,8 @@
 
 ./clean.sh &&
   docker-compose -f docker-axon-server.yml up -d &&
-  sleep 10 &&
+  sleep 15 &&
   docker-compose -f docker-backend.yml up -d &&
-  sleep 5 &&
+  sleep 10 &&
   ./initialize.sh &&
   docker-compose -f docker-frontend.yml up -d

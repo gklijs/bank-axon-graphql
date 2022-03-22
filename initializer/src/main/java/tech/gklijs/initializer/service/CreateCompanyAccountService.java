@@ -7,14 +7,10 @@ import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.stereotype.Component;
 import tech.gklijs.api.bank.command.CreateBankAccountCommand;
 import tech.gklijs.api.bank.command.MoneyTransferCommand;
-import tech.gklijs.api.bank.query.BankAccount;
-import tech.gklijs.api.bank.query.FindBankAccountQuery;
+import tech.gklijs.api.bank.query.BankAccountList;
+import tech.gklijs.api.bank.query.FindBankAccountsForUserQuery;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import javax.annotation.PostConstruct;
 
 @Slf4j
@@ -26,37 +22,35 @@ public class CreateCompanyAccountService {
     private final QueryGateway queryGateway;
     private static final String COMPANY_IBAN = "NL09AXON0000000000";
     private static final String COMPANY_USERNAME = "axonadmin";
-    private static final long DEFAULT_TIMEOUT = 10;
 
     @PostConstruct
-    public void createCompanyAccountIfNotExisting() throws ExecutionException, InterruptedException, TimeoutException {
-        log.info("createCompanyAccountIfNotExisting");
-        BankAccount bankaccount;
+    public void createCompanyAccountIfNotExisting() throws InterruptedException {
+        log.info("will wait till projector is available");
+        waitForProjector();
+        log.info("will create company account");
+        createCompanyAccount();
+        log.info("created company account");
+    }
+
+    private void waitForProjector() throws InterruptedException {
         try {
-            bankaccount = queryGateway.query(new FindBankAccountQuery(COMPANY_IBAN), BankAccount.class).get(
-                    DEFAULT_TIMEOUT,
-                    TimeUnit.SECONDS);
-        } catch (ExecutionException e) {
-            log.info("encountered error, probably account did not exist yet");
-            bankaccount = createCompanyAccount().get(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
+            queryGateway.query(new FindBankAccountsForUserQuery(COMPANY_USERNAME), BankAccountList.class);
+            log.info("projector is available");
+        } catch (Exception e) {
+            log.info("projector not available yet, {}", e.getMessage());
+            Thread.sleep(20_000);
+            waitForProjector();
         }
-        if (bankaccount == null) {
-            log.warn("Did not get bank account");
-            throw new CompanyAccountCreationFailed();
-        }
-        log.info("Current state of company bank account: {}", bankaccount);
     }
 
-    private CompletableFuture<BankAccount> createCompanyAccount()
-            throws ExecutionException, InterruptedException, TimeoutException {
-        commandGateway.send(new CreateBankAccountCommand(COMPANY_IBAN, COMPANY_USERNAME)).get(DEFAULT_TIMEOUT,
-                                                                                              TimeUnit.SECONDS);
-        setInitialAmount().get(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
-        Thread.sleep(1000);
-        return queryGateway.query(new FindBankAccountQuery(COMPANY_IBAN), BankAccount.class);
+
+    private void createCompanyAccount() {
+        Object result = commandGateway.sendAndWait(new CreateBankAccountCommand(COMPANY_IBAN, COMPANY_USERNAME));
+        log.info("result of creating bank account: {}", result);
+        setInitialAmount();
     }
 
-    private CompletableFuture<Object> setInitialAmount() {
+    private void setInitialAmount() {
         MoneyTransferCommand command = new MoneyTransferCommand(
                 UUID.randomUUID().toString(),
                 "cash",
@@ -66,6 +60,7 @@ public class CreateCompanyAccountService {
                 "initial funds",
                 COMPANY_USERNAME
         );
-        return commandGateway.send(command);
+        Object result = commandGateway.sendAndWait(command);
+        log.info("result of transfer: {}", result);
     }
 }
