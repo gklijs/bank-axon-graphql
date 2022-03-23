@@ -19,3 +19,14 @@ services:
       AXON_AXONSERVER_SERVERS: "axon-server"
     mem_limit: 2000m
     restart: always
+
+  kafka-event-emitter:
+    build:
+      context: kafka-event-emitter
+    container_name: kafka-event-emitter
+    ports:
+      - "8333:8333"
+    environment:
+      AXON_AXONSERVER_SERVERS: "axon-server"
+    mem_limit: 2000m
+    restart: always

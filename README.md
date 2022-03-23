@@ -43,6 +43,7 @@ Contents
     * [Command handler](#command-handler)
     * [Graphql endpoint](#graphql-endpoint)
     * [Frontend](#frontend)
+    * [Kafka Event Emitter](#kee)
 * [Scripts](#scripts)
 
 ## <a id="development">Development</a>
@@ -100,6 +101,12 @@ static files, but could be used to proxy traffic to the graphql endpoint to prev
 To focus on the backend part, the frontend is currently not rebuild with the `prepare.sh` script. You can use
 the [build-and-copy-frontend.sh](frontend/build-and-copy-frontend.sh) script to rebuild. But you need leiningen and
 saasc installed to do so.
+
+### <a id="kee">Kafka Event Emitter</a>
+
+This is an additional component, streaming all the events using the kafka protocol, in this case a Redpanda instance.
+You can see the messages logging into the redpanda container with `docker exec -it redpanda bash` and
+executing `rpk topic consume bank-axon-events`.
 
 ## <a id="scripts">Scripts</a>
 
