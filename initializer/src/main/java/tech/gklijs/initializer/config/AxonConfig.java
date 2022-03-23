@@ -13,7 +13,7 @@ public class AxonConfig {
 
         xStream.allowTypesByWildcard(new String[]{
                 "java.util.**",
-                "tech.gklijs.tech.**"
+                "tech.gklijs.api.**"
         });
         return xStream;
     }

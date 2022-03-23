@@ -1,0 +1,30 @@
+axon:
+  axonserver:
+    client-id: emitter
+  serializer:
+    events: jackson
+  kafka:
+    publisher:
+      enabled: true
+    clientid: axon-emitter
+    producer:
+      event-processor-mode: tracking
+      retries: 0
+      bootstrap-servers: redpanda:29092
+    consumer:
+      bootstrap-servers: redpanda:29092
+    properties:
+      security.protocol: PLAINTEXT
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    beans:
+      enabled: true
+server:
+  port: 8333
