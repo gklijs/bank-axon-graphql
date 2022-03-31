@@ -9,3 +9,4 @@ services:
     environment:
       AXON_AXONSERVER_SERVERS: "axon-server"
     mem_limit: 2000m
+    restart: on-failure
