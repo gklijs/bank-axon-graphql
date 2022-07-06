@@ -5,4 +5,5 @@
   mvn -f graphql-endpoint clean package &&
   mvn -f projector clean package &&
   mvn -f kafka-event-emitter clean package &&
+  mvn -f kafka-event-logger clean package &&
   docker-compose -f docker-backend.yml -f docker-initializer.yml -f docker-frontend.yml build --no-cache

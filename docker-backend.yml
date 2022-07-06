@@ -30,3 +30,12 @@ services:
       AXON_AXONSERVER_SERVERS: "axon-server"
     mem_limit: 2000m
     restart: always
+
+  kafka-event-logger:
+    build:
+      context: kafka-event-logger
+    container_name: kafka-event-logger
+    ports:
+      - "8334:8334"
+    mem_limit: 2000m
+    restart: always

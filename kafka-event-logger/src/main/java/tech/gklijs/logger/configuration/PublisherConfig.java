@@ -1,4 +1,4 @@
-package tech.gklijs.emitter.configuration;
+package tech.gklijs.logger.configuration;
 
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.extensions.kafka.KafkaProperties;
@@ -22,6 +22,7 @@ public class PublisherConfig {
                 .build();
     }
 
+    // Needed because autoconfig has it as @ConditionalOnClass
     @Bean
     public KafkaPublisher<String, byte[]> kafkaPublisher(ProducerFactory<String, byte[]> producerFactory) {
         return KafkaPublisher.<String, byte[]>builder()

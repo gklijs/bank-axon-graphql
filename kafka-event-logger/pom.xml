@@ -10,11 +10,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>tech.gklijs</groupId>
-    <artifactId>kafka-event-emitter</artifactId>
+    <artifactId>kafka-event-logger</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>Kafka event emitter</name>
-    <description>Send all the events from Axon Server to Kafka</description>
+    <name>Kafka event logger</name>
+    <description>Logs all events read from Kafka</description>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -68,7 +68,7 @@
     </dependencies>
 
     <build>
-        <finalName>emitter-docker</finalName>
+        <finalName>logger-docker</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

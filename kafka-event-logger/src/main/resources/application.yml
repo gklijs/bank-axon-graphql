@@ -1,0 +1,29 @@
+axon:
+  axonserver:
+    enabled: false
+  serializer:
+    events: xstream
+  kafka:
+    default-topic: bank-axon-events
+    consumer:
+      event-processor-mode: pooled_streaming
+      bootstrap-servers: redpanda:29092
+    publisher:
+      enabled: false
+    fetcher:
+      enabled: true
+    properties:
+      security.protocol: PLAINTEXT
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    beans:
+      enabled: true
+server:
+  port: 8334
