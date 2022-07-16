@@ -10,7 +10,6 @@ import tech.gklijs.initializer.config.AxonConfig;
 public class InitializerApplication {
 
     public static void main(String[] args) {
-        var ctx = SpringApplication.run(InitializerApplication.class, args);
-        SpringApplication.exit(ctx, () -> 0);
+        SpringApplication.run(InitializerApplication.class, args);
     }
 }

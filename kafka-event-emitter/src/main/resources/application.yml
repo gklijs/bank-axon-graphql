@@ -6,10 +6,9 @@ axon:
   kafka:
     publisher:
       enabled: true
-    clientid: axon-emitter
     producer:
       event-processor-mode: tracking
-      retries: 0
+      retries: 10000
       bootstrap-servers: redpanda:29092
     consumer:
       bootstrap-servers: redpanda:29092

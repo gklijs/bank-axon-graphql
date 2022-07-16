@@ -11,6 +11,7 @@ import tech.gklijs.api.bank.query.BankAccountList;
 import tech.gklijs.api.bank.query.FindBankAccountsForUserQuery;
 
 import java.util.UUID;
+import java.util.stream.IntStream;
 import javax.annotation.PostConstruct;
 
 @Slf4j
@@ -44,23 +45,23 @@ public class CreateCompanyAccountService {
     }
 
 
-    private void createCompanyAccount() {
+    private void createCompanyAccount() throws InterruptedException {
         Object result = commandGateway.sendAndWait(new CreateBankAccountCommand(COMPANY_IBAN, COMPANY_USERNAME));
         log.info("result of creating bank account: {}", result);
-        setInitialAmount();
+        Thread.sleep(5_000);
+        IntStream.range(0, 35000).forEach(this::depositEuro);
     }
 
-    private void setInitialAmount() {
+    private void depositEuro(int serial) {
         MoneyTransferCommand command = new MoneyTransferCommand(
                 UUID.randomUUID().toString(),
                 "cash",
-                100000000000000000L,
+                100L,
                 "cash",
                 COMPANY_IBAN,
-                "initial funds",
+                String.format("deposit euro %d", serial),
                 COMPANY_USERNAME
         );
-        Object result = commandGateway.sendAndWait(command);
-        log.info("result of transfer: {}", result);
+        commandGateway.sendAndWait(command);
     }
 }

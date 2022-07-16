@@ -6,27 +6,27 @@ import org.axonframework.eventhandling.EventMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import tech.gklijs.api.bank.event.MoneyCreditedEvent;
-import tech.gklijs.api.bank.event.MoneyDebitedEvent;
+
+import java.time.Instant;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 @ProcessingGroup("kafka-group")
 public class EventLogger {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventLogger.class);
-
-    @EventHandler
-    public void on(MoneyCreditedEvent event){
-        LOGGER.info(String.format("Money was credited, %d to %s", event.getAmount(), event.getIban()));
-    }
-
-    @EventHandler
-    public void on(MoneyDebitedEvent event){
-        LOGGER.info(String.format("Money was debited, %d from %s", event.getAmount(), event.getIban()));
-    }
+    private static final AtomicLong counter = new AtomicLong();
+    private static final AtomicLong start = new AtomicLong();
 
     @EventHandler
     public void on(EventMessage<?> event){
-        LOGGER.info(String.format("Recieved event with name %s", event.getPayloadType().getName()));
+        long current = counter.incrementAndGet();
+        if (current == 100L){
+            start.set(Instant.now().toEpochMilli());
+        }
+        if (current == 100100L){
+            long now = Instant.now().toEpochMilli();
+            LOGGER.info(String.format("Reading a 100.000 events took: %d milliseconds", now - start.get()));
+        }
     }
 }
