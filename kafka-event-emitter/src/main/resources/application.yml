@@ -11,8 +11,10 @@ axon:
       event-processor-mode: tracking
       retries: 0
       bootstrap-servers: redpanda:29092
+      value-serializer: io.cloudevents.kafka.CloudEventSerializer
     consumer:
       bootstrap-servers: redpanda:29092
+      value-deserializer: io.cloudevents.kafka.CloudEventDeserializer
     properties:
       security.protocol: PLAINTEXT
 management:
