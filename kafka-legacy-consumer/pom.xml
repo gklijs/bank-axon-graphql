@@ -10,11 +10,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>tech.gklijs</groupId>
-    <artifactId>kafka-event-emitter</artifactId>
+    <artifactId>kafka-legacy-consumer</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>Kafka event emitter</name>
-    <description>Send MoneyCreditedEvent and MoneyDebitedEvent events from Axon Server to Kafka</description>
+    <name>Kafka legacy consumer</name>
+    <description>Initiates transactions based on the events via the legacy API events</description>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -45,6 +45,11 @@
         <dependency>
             <groupId>tech.gklijs</groupId>
             <artifactId>core-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>tech.gklijs</groupId>
+            <artifactId>legacy-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -105,7 +110,7 @@
     </dependencies>
 
     <build>
-        <finalName>emitter-docker</finalName>
+        <finalName>legacy-consumer-docker</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

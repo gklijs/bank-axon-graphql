@@ -1,0 +1,29 @@
+axon:
+  axonserver:
+    client-id: legacy-consumer
+  serializer:
+    events: jackson
+  kafka:
+    publisher:
+      enabled: false
+    fetcher:
+      enabled: true
+    consumer:
+      bootstrap-servers: redpanda:29092
+      value-deserializer: io.cloudevents.kafka.CloudEventDeserializer
+      auto-offset-reset: earliest
+    properties:
+      security.protocol: PLAINTEXT
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    beans:
+      enabled: true
+server:
+  port: 8335

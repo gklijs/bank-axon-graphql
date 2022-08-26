@@ -30,3 +30,21 @@ services:
       AXON_AXONSERVER_SERVERS: "axon-server"
     mem_limit: 2000m
     restart: always
+
+  kafka-legacy-consumer:
+    build:
+      context: kafka-legacy-consumer
+    container_name: kafka-legacy-consumer
+    ports:
+      - "8335:8335"
+    environment:
+      AXON_AXONSERVER_SERVERS: "axon-server"
+    mem_limit: 2000m
+    restart: always
+
+  kafka-legacy-producer:
+    build:
+      context: kafka-legacy-producer
+    container_name: kafka-legacy-producer
+    mem_limit: 1000m
+    restart: on-failure

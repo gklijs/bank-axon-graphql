@@ -21,8 +21,7 @@ import org.springframework.context.annotation.Configuration;
 import tech.gklijs.api.bank.event.MoneyCreditedEvent;
 import tech.gklijs.api.bank.event.MoneyDebitedEvent;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URI;
 import java.util.Optional;
 
 import static org.axonframework.extensions.kafka.eventhandling.producer.KafkaEventPublisher.DEFAULT_PROCESSING_GROUP;
@@ -53,11 +52,11 @@ public class PublisherConfig {
     @Bean
     public KafkaPublisher<String, CloudEvent> kafkaPublisher(
             ProducerFactory<String, CloudEvent> producerFactory,
-            Serializer serializer,
+            @Qualifier("eventSerializer") Serializer eventSerializer,
             KafkaMessageConverter<String, CloudEvent> converter) {
         return KafkaPublisher.<String, CloudEvent>builder()
                              .topicResolver(this::resolver)
-                             .serializer(serializer)
+                             .serializer(eventSerializer)
                              .producerFactory(producerFactory)
                              .messageConverter(converter)
                              .build();
@@ -68,11 +67,13 @@ public class PublisherConfig {
             @Qualifier("eventSerializer") Serializer eventSerializer,
             org.axonframework.config.Configuration configuration
     ) {
+        URI gitUri = URI.create("https://github.com/gklijs/bank-axon-graphql");
         return CloudEventKafkaMessageConverter
                 .builder()
                 .serializer(eventSerializer)
                 .upcasterChain(configuration.upcasterChain()
                                        != null ? configuration.upcasterChain() : new EventUpcasterChain())
+                .sourceSupplier(m -> gitUri)
                 .build();
     }
 

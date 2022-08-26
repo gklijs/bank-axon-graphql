@@ -9,6 +9,20 @@ class IbanUtilsTest {
 
     @Test
     void testIbanCheck() {
-        assertTrue(IbanUtil.isValidAxonIban("NL09AXON0000000000"));
+        assertTrue(IbanUtil.isValidIban("NL09AXON0000000000"));
+    }
+
+    @Test
+    void testAxonCheck() {
+        assertTrue(IbanUtil.isAxonIban("NL09AXON0000000000"));
+    }
+
+    @Test
+    void testIbanCheckWontThrowWhenInvalid() {
+        assertFalse(IbanUtil.isValidIban("NL09AXON0001000000"));
+    }
+    @Test
+    void testAxonCheckWontThrowWhenInvalid() {
+        assertFalse(IbanUtil.isAxonIban("NL09AXON0001000000"));
     }
 }

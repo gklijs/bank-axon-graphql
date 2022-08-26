@@ -53,7 +53,7 @@ class BankTransferManagementSaga {
                 this.transferId,
                 BankExceptionStatusCode.INVALID_FROM.description
             )
-        } else if ("cash" == this.from) {
+        } else if ("cash" == this.from || !IbanUtil.isAxonIban(from)) {
             CreditMoneyCommand(this.to, this.amount, this.transferId)
         } else {
             DebitMoneyCommand(
@@ -72,7 +72,7 @@ class BankTransferManagementSaga {
     @SagaEventHandler(associationProperty = "transferId")
     fun on(event: MoneyDebitedEvent) {
         this.debited = true
-        val command: Any = if (IbanUtil.isValidAxonIban(this.to)) {
+        val command: Any = if (IbanUtil.isAxonIban(this.to)) {
             CreditMoneyCommand(this.to, this.amount, this.transferId)
         } else {
             MarkTransferCompletedCommand(this.transferId)

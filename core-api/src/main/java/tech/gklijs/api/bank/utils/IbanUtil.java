@@ -1,6 +1,10 @@
 package tech.gklijs.api.bank.utils;
 
 import lombok.experimental.UtilityClass;
+import nl.garvelink.iban.IBAN;
+import nl.garvelink.iban.IBANFields;
+import nl.garvelink.iban.Modulo97;
+import nl.garvelink.iban.WrongChecksumException;
 
 import java.math.BigInteger;
 import java.util.stream.IntStream;
@@ -23,17 +27,24 @@ public class IbanUtil {
         return "NL" + checkPart + "AXON" + digits;
     }
 
-    public boolean isValidAxonIban(String iban) {
-        if (iban.length() != 18) {
+    public boolean isAxonIban(String iban) {
+        try {
+            return IBANFields.getBankIdentifier(IBAN.valueOf(iban))
+                             .map(i -> i.equals("AXON"))
+                             .orElse(false);
+        }catch (WrongChecksumException e){
             return false;
         }
-        return iban.equals(toIban(iban.substring(8, 18)));
+    }
+
+    public boolean isValidIban(String iban) {
+        return Modulo97.verifyCheckDigits(iban);
     }
 
     public boolean invalidFrom(String iban) {
         if (iban.equals("cash")) {
             return false;
         }
-        return !isValidAxonIban(iban);
+        return !isValidIban(iban);
     }
 }
