@@ -2,15 +2,9 @@ package tech.gklijs.emitter.configuration;
 
 import io.cloudevents.CloudEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.axonframework.config.EventProcessingConfigurer;
 import org.axonframework.eventhandling.EventMessage;
-import org.axonframework.eventhandling.PropagatingErrorHandler;
-import org.axonframework.extensions.kafka.KafkaProperties;
 import org.axonframework.extensions.kafka.eventhandling.KafkaMessageConverter;
 import org.axonframework.extensions.kafka.eventhandling.cloudevent.CloudEventKafkaMessageConverter;
-import org.axonframework.extensions.kafka.eventhandling.producer.ConfirmationMode;
-import org.axonframework.extensions.kafka.eventhandling.producer.DefaultProducerFactory;
-import org.axonframework.extensions.kafka.eventhandling.producer.KafkaEventPublisher;
 import org.axonframework.extensions.kafka.eventhandling.producer.KafkaPublisher;
 import org.axonframework.extensions.kafka.eventhandling.producer.ProducerFactory;
 import org.axonframework.serialization.Serializer;
@@ -24,20 +18,9 @@ import tech.gklijs.api.bank.event.MoneyDebitedEvent;
 import java.net.URI;
 import java.util.Optional;
 
-import static org.axonframework.extensions.kafka.eventhandling.producer.KafkaEventPublisher.DEFAULT_PROCESSING_GROUP;
-
 @Slf4j
 @Configuration
 public class PublisherConfig {
-
-    @Bean
-    ProducerFactory<String, CloudEvent> producerFactory(KafkaProperties kafkaProperties) {
-        return new DefaultProducerFactory.Builder<String, CloudEvent>()
-                .configuration(kafkaProperties.buildProducerProperties())
-                .producerCacheSize(10_000)
-                .confirmationMode(ConfirmationMode.WAIT_FOR_ACK)
-                .build();
-    }
 
     private Optional<String> resolver(EventMessage<?> message) {
         var type = message.getPayloadType();
@@ -50,14 +33,15 @@ public class PublisherConfig {
     }
 
     @Bean
+    @SuppressWarnings("unchecked")
     public KafkaPublisher<String, CloudEvent> kafkaPublisher(
-            ProducerFactory<String, CloudEvent> producerFactory,
+            ProducerFactory<?, ?> producerFactory,
             @Qualifier("eventSerializer") Serializer eventSerializer,
             KafkaMessageConverter<String, CloudEvent> converter) {
         return KafkaPublisher.<String, CloudEvent>builder()
                              .topicResolver(this::resolver)
                              .serializer(eventSerializer)
-                             .producerFactory(producerFactory)
+                             .producerFactory((ProducerFactory<String, CloudEvent>) producerFactory)
                              .messageConverter(converter)
                              .build();
     }
@@ -75,24 +59,5 @@ public class PublisherConfig {
                                        != null ? configuration.upcasterChain() : new EventUpcasterChain())
                 .sourceSupplier(m -> gitUri)
                 .build();
-    }
-
-    @Bean
-    public KafkaEventPublisher<String, CloudEvent> kafkaEventPublisher(
-            KafkaPublisher<String, CloudEvent> kafkaPublisher,
-            EventProcessingConfigurer eventProcessingConfigurer) {
-        KafkaEventPublisher<String, CloudEvent> kafkaEventPublisher =
-                KafkaEventPublisher.<String, CloudEvent>builder().kafkaPublisher(kafkaPublisher).build();
-
-        eventProcessingConfigurer.registerEventHandler(configuration -> kafkaEventPublisher)
-                                 .registerListenerInvocationErrorHandler(
-                                         DEFAULT_PROCESSING_GROUP, configuration -> PropagatingErrorHandler.instance()
-                                 )
-                                 .assignHandlerTypesMatching(
-                                         DEFAULT_PROCESSING_GROUP,
-                                         clazz -> clazz.isAssignableFrom(KafkaEventPublisher.class)
-                                 );
-        eventProcessingConfigurer.registerTrackingEventProcessor(DEFAULT_PROCESSING_GROUP);
-        return kafkaEventPublisher;
     }
 }

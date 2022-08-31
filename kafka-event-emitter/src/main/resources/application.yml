@@ -17,6 +17,7 @@ axon:
       value-deserializer: io.cloudevents.kafka.CloudEventDeserializer
     properties:
       security.protocol: PLAINTEXT
+    message-converter-mode: cloud_event
 management:
   endpoints:
     web:

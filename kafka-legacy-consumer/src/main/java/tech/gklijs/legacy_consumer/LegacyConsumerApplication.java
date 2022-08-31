@@ -1,7 +1,8 @@
 package tech.gklijs.legacy_consumer;
 
 import io.cloudevents.CloudEvent;
-import org.axonframework.config.EventProcessingConfigurer;
+import org.axonframework.config.Configurer;
+import org.axonframework.extensions.kafka.configuration.KafkaMessageSourceConfigurer;
 import org.axonframework.extensions.kafka.eventhandling.consumer.subscribable.SubscribableKafkaMessageSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -18,11 +19,13 @@ public class LegacyConsumerApplication {
 
     @Autowired
     public void registerProcessor(
-            EventProcessingConfigurer configurer,
+            Configurer configurer,
+            KafkaMessageSourceConfigurer kafkaMessageSourceConfigurer,
             SubscribableKafkaMessageSource<String, CloudEvent> subscribableKafkaMessageSource
     ) {
-        configurer
-                .registerSubscribingEventProcessor(LEGACY_CONSUMER_PROCESSOR_NAME, c -> subscribableKafkaMessageSource);
-        subscribableKafkaMessageSource.start();
+        kafkaMessageSourceConfigurer.configureSubscribableSource(c -> subscribableKafkaMessageSource);
+        configurer.registerModule(kafkaMessageSourceConfigurer);
+        configurer.eventProcessing()
+                  .registerSubscribingEventProcessor(LEGACY_CONSUMER_PROCESSOR_NAME, c -> subscribableKafkaMessageSource);
     }
 }

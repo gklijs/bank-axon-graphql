@@ -10,10 +10,10 @@ axon:
       enabled: true
     consumer:
       bootstrap-servers: redpanda:29092
-      value-deserializer: io.cloudevents.kafka.CloudEventDeserializer
       auto-offset-reset: earliest
     properties:
       security.protocol: PLAINTEXT
+    message-converter-mode: cloud_event
 management:
   endpoints:
     web:

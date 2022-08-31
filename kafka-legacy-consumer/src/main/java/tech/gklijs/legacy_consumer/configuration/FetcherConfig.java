@@ -3,15 +3,12 @@ package tech.gklijs.legacy_consumer.configuration;
 import io.cloudevents.CloudEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.eventhandling.EventMessage;
-import org.axonframework.extensions.kafka.KafkaProperties;
+import org.axonframework.extensions.kafka.configuration.KafkaMessageSourceConfigurer;
 import org.axonframework.extensions.kafka.eventhandling.KafkaMessageConverter;
-import org.axonframework.extensions.kafka.eventhandling.cloudevent.CloudEventKafkaMessageConverter;
 import org.axonframework.extensions.kafka.eventhandling.consumer.ConsumerFactory;
-import org.axonframework.extensions.kafka.eventhandling.consumer.DefaultConsumerFactory;
 import org.axonframework.extensions.kafka.eventhandling.consumer.Fetcher;
 import org.axonframework.extensions.kafka.eventhandling.consumer.subscribable.SubscribableKafkaMessageSource;
 import org.axonframework.serialization.Serializer;
-import org.axonframework.serialization.upcasting.event.EventUpcasterChain;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,9 +20,9 @@ import java.util.Collections;
 @Configuration
 public class FetcherConfig {
 
-    @Bean("axonKafkaConsumerFactory")
-    public ConsumerFactory<String, CloudEvent> kafkaConsumerFactory(KafkaProperties properties) {
-        return new DefaultConsumerFactory<>(properties.buildConsumerProperties());
+    @Bean
+    KafkaMessageSourceConfigurer kafkaMessageSourceConfigurer() {
+        return new KafkaMessageSourceConfigurer();
     }
 
     @Bean
@@ -43,19 +40,6 @@ public class FetcherConfig {
                 .consumerFactory(kafkaConsumerFactory)
                 .fetcher(kafkaFetcher)
                 .messageConverter(kafkaMessageConverter)
-                .build();
-    }
-
-    @Bean
-    public KafkaMessageConverter<String, CloudEvent> kafkaMessageConverter(
-            @Qualifier("eventSerializer") Serializer eventSerializer,
-            org.axonframework.config.Configuration configuration
-    ) {
-        return CloudEventKafkaMessageConverter
-                .builder()
-                .serializer(eventSerializer)
-                .upcasterChain(configuration.upcasterChain()
-                                       != null ? configuration.upcasterChain() : new EventUpcasterChain())
                 .build();
     }
 }
